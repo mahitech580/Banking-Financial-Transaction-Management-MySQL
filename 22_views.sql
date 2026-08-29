@@ -1,0 +1,3 @@
+USE banking_financial_management;
+CREATE OR REPLACE VIEW v_customer_account_summary AS SELECT c.customer_id,c.customer_number,CONCAT(c.first_name,' ',c.last_name) customer_name,COUNT(a.account_id) account_count,COALESCE(SUM(a.current_balance),0) total_balance FROM customers c LEFT JOIN accounts a ON a.customer_id=c.customer_id GROUP BY c.customer_id,c.customer_number,customer_name;
+CREATE OR REPLACE VIEW v_transaction_summary AS SELECT DATE(transaction_time) transaction_date,COUNT(*) transaction_count,SUM(amount) total_value,AVG(amount) average_value FROM transactions WHERE status='SUCCESS' GROUP BY DATE(transaction_time);

@@ -1,0 +1,2 @@
+USE banking_financial_management;
+SELECT DATE_FORMAT(transaction_time,'%Y-%m') month,SUM(CASE WHEN transaction_type='CREDIT' THEN amount ELSE 0 END) credits,SUM(CASE WHEN transaction_type='DEBIT' THEN amount ELSE 0 END) debits,SUM(CASE WHEN transaction_type='CREDIT' THEN amount WHEN transaction_type='DEBIT' THEN -amount ELSE 0 END) net_flow FROM transactions WHERE status='SUCCESS' GROUP BY DATE_FORMAT(transaction_time,'%Y-%m');

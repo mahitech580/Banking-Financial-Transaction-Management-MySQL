@@ -1,0 +1,2 @@
+USE banking_financial_management;
+SELECT c.customer_id,CONCAT(c.first_name,' ',c.last_name) customer,c.risk_level,COALESCE(SUM(t.amount),0) transaction_value FROM customers c LEFT JOIN accounts a ON a.customer_id=c.customer_id LEFT JOIN transactions t ON t.account_id=a.account_id GROUP BY c.customer_id,customer,c.risk_level ORDER BY FIELD(c.risk_level,'HIGH','MEDIUM','LOW'),transaction_value DESC;

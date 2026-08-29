@@ -1,0 +1,8 @@
+USE banking_financial_management;
+DROP FUNCTION IF EXISTS calculate_risk_band;
+DELIMITER $$
+CREATE FUNCTION calculate_risk_band(p_score DECIMAL(5,2)) RETURNS VARCHAR(10) DETERMINISTIC
+BEGIN
+ RETURN CASE WHEN p_score >= 80 THEN 'HIGH' WHEN p_score >= 50 THEN 'MEDIUM' ELSE 'LOW' END;
+END$$
+DELIMITER ;

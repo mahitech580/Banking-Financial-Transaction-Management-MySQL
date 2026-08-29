@@ -1,0 +1,3 @@
+DROP DATABASE IF EXISTS banking_financial_management;
+CREATE DATABASE banking_financial_management;
+USE banking_financial_management;
