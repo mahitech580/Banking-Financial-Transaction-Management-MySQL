@@ -155,3 +155,7 @@ DELIMITER ;
 
 -- Example pagination: inspect the first 20 ledger entries for customer ID 1.
 CALL get_customer_transactions(1, 20, 0);
+
+
+-- Run a read-only summary after data loading.
+CALL get_customer_financial_summary(1);
