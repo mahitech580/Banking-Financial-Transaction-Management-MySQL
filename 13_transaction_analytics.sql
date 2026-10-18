@@ -51,3 +51,7 @@ SELECT DATE(transaction_time) AS event_day,COUNT(*) AS attempts,SUM(status='SUCC
 
 -- ISO-week bucket for a compact reporting trend
 SELECT YEARWEEK(transaction_time,3) AS iso_year_week,COUNT(*) AS attempts,SUM(CASE WHEN status='SUCCESS' THEN amount ELSE 0 END) AS successful_value FROM transactions GROUP BY YEARWEEK(transaction_time,3) ORDER BY iso_year_week;
+
+
+-- Branch rollup joins transaction facts to the branch owning each account
+SELECT b.branch_name,COUNT(t.transaction_id) AS attempts,SUM(t.status='SUCCESS') AS successes,SUM(t.status='FAILED') AS failures,SUM(CASE WHEN t.status='SUCCESS' THEN t.amount ELSE 0 END) AS successful_value FROM branches b LEFT JOIN accounts a ON a.branch_id=b.branch_id LEFT JOIN transactions t ON t.account_id=a.account_id GROUP BY b.branch_id,b.branch_name ORDER BY successful_value DESC;
