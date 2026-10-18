@@ -69,6 +69,8 @@ function requireDatabase(req, res, next) {
   next();
 }
 
+app.get("/healthz", (_req, res) => res.status(200).json({ ok: true, service: "running" }));
+
 app.get("/api/health", asyncRoute(async (_req, res) => {
   if (!pool) {
     return res.status(503).json({ ok: false, database: "not_configured", transfersEnabled, message: "Configure the MYSQL_* environment variables." });
