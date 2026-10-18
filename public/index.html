@@ -23,7 +23,12 @@
         <button class="nav-item" data-page="customers"><span class="nav-icon">♙</span>Customers</button>
         <button class="nav-item" data-page="transactions"><span class="nav-icon">⇄</span>Transactions</button>
         <button class="nav-item" data-page="analytics"><span class="nav-icon">▥</span>Analytics</button>
+        <button class="nav-item" data-page="branches"><span class="nav-icon">⌂</span>Branches</button>
+        <button class="nav-item" data-page="cards"><span class="nav-icon">▭</span>Cards</button>
         <button class="nav-item" data-page="loans"><span class="nav-icon">▱</span>Loans</button>
+        <button class="nav-item" data-page="repayments"><span class="nav-icon">↻</span>Repayments</button>
+        <button class="nav-item" data-page="settlements"><span class="nav-icon">✓</span>Settlements</button>
+        <button class="nav-item" data-page="disputes"><span class="nav-icon">⚑</span>Disputes</button>
         <button class="nav-item" data-page="fraud"><span class="nav-icon">⌁</span>Fraud & risk</button>
       </nav>
       <div class="sidebar-spacer"></div>
@@ -106,6 +111,32 @@
         <section class="page" id="page-loans">
           <div class="page-heading"><div><p class="eyebrow">CREDIT PORTFOLIO</p><h1>Loans</h1><p class="subtitle">Loan portfolio and recorded repayment summaries.</p></div><span class="panel-tag">READ ONLY</span></div>
           <article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>LOAN</th><th>CUSTOMER</th><th>TYPE</th><th>PRINCIPAL</th><th>RATE</th><th>PAID / DUE</th><th>STATUS</th></tr></thead><tbody id="loans-rows"><tr><td colspan="7" class="table-loading">Loading loans…</td></tr></tbody></table></div></article>
+        </section>
+
+
+        <section class="page" id="page-branches">
+          <div class="page-heading"><div><p class="eyebrow">BANK NETWORK</p><h1>Branches</h1><p class="subtitle">Branch directory with aggregated customer and account balances.</p></div></div>
+          <article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>BRANCH</th><th>CODE</th><th>LOCATION</th><th>CUSTOMERS</th><th>ACCOUNTS</th><th>TOTAL BALANCE</th></tr></thead><tbody id="branches-rows"><tr><td colspan="6" class="table-loading">Loading branches…</td></tr></tbody></table></div></article>
+        </section>
+
+        <section class="page" id="page-cards">
+          <div class="page-heading"><div><p class="eyebrow">PAYMENT INSTRUMENTS</p><h1>Cards</h1><p class="subtitle">Card registry, linked accounts, limits and current card status.</p></div><span class="panel-tag">CARD REGISTRY</span></div>
+          <article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>CARD</th><th>CUSTOMER</th><th>LINKED ACCOUNT</th><th>TYPE</th><th>CREDIT LIMIT</th><th>ISSUED</th><th>STATUS</th></tr></thead><tbody id="cards-rows"><tr><td colspan="7" class="table-loading">Loading cards…</td></tr></tbody></table></div></article>
+        </section>
+
+        <section class="page" id="page-repayments">
+          <div class="page-heading"><div><p class="eyebrow">LOAN SERVICING</p><h1>Repayments</h1><p class="subtitle">Scheduled dues and recorded repayment status by loan.</p></div></div>
+          <article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>PAYMENT</th><th>CUSTOMER / LOAN</th><th>DUE DATE</th><th>PAID DATE</th><th>AMOUNT DUE</th><th>AMOUNT PAID</th><th>STATUS</th></tr></thead><tbody id="repayments-rows"><tr><td colspan="7" class="table-loading">Loading repayments…</td></tr></tbody></table></div></article>
+        </section>
+
+        <section class="page" id="page-settlements">
+          <div class="page-heading"><div><p class="eyebrow">CLEARING & SETTLEMENT</p><h1>Settlements</h1><p class="subtitle">Settlement records linked to account transactions.</p></div></div>
+          <article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>SETTLEMENT</th><th>REFERENCE</th><th>CUSTOMER / ACCOUNT</th><th>TRANSACTION TIME</th><th>SETTLED AT</th><th>AMOUNT</th><th>STATUS</th></tr></thead><tbody id="settlements-rows"><tr><td colspan="7" class="table-loading">Loading settlements…</td></tr></tbody></table></div></article>
+        </section>
+
+        <section class="page" id="page-disputes">
+          <div class="page-heading"><div><p class="eyebrow">CUSTOMER CASE MANAGEMENT</p><h1>Disputes</h1><p class="subtitle">Track transaction disputes and investigation outcomes.</p></div></div>
+          <article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>OPENED</th><th>REFERENCE</th><th>CUSTOMER / ACCOUNT</th><th>REASON</th><th>DISPUTED AMOUNT</th><th>STATUS</th></tr></thead><tbody id="disputes-rows"><tr><td colspan="6" class="table-loading">Loading disputes…</td></tr></tbody></table></div></article>
         </section>
 
         <section class="page" id="page-fraud">
