@@ -37,3 +37,11 @@ SELECT CASE
 FROM accounts
 GROUP BY balance_band
 ORDER BY MIN(current_balance) DESC;
+
+
+-- Accounts without ledger entries
+SELECT a.account_number, a.account_type, a.current_balance, a.status
+FROM accounts AS a
+LEFT JOIN transactions AS t ON t.account_id = a.account_id
+WHERE t.transaction_id IS NULL
+ORDER BY a.account_id;
