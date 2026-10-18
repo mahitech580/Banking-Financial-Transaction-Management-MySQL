@@ -64,3 +64,7 @@ SELECT calculate_risk_band(0.00) AS zero_score,calculate_risk_band(49.99) AS low
 
 -- Invalid inputs are explicitly mapped to INVALID by the example utility.
 SELECT calculate_risk_band(-1.00) AS negative_score,calculate_risk_band(100.01) AS score_above_max,calculate_risk_band(NULL) AS missing_score;
+
+
+-- Compare zero-interest and interest-bearing repayment scenarios.
+SELECT calculate_emi(120000.00,0.000,12) AS zero_rate_12_months,calculate_emi(300000.00,8.250,48) AS education_example,calculate_emi(250000.00,11.500,36) AS personal_loan_example;
