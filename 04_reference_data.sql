@@ -20,3 +20,11 @@ SELECT state, COUNT(*) AS branch_count,
 FROM branches
 GROUP BY state
 ORDER BY branch_count DESC, state;
+
+
+-- Merchant risk distribution
+SELECT risk_level, COUNT(*) AS merchant_count,
+       GROUP_CONCAT(merchant_name ORDER BY merchant_name SEPARATOR ', ') AS merchants
+FROM merchants
+GROUP BY risk_level
+ORDER BY FIELD(risk_level, 'HIGH', 'MEDIUM', 'LOW');
