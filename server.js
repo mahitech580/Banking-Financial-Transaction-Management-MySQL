@@ -8,10 +8,11 @@ const path = require("node:path");
 
 const app = express();
 const PORT = Number(process.env.PORT || 10000);
-const DATABASE_NAME = process.env.MYSQL_DATABASE || "banking_financial_management";
+const DATABASE_NAME = process.env.MYSQL_DATABASE || (process.env.MYSQL_URL ? decodeURIComponent(new URL(process.env.MYSQL_URL).pathname.replace(/^\\//, "")) : "") || "banking_financial_management";
+const transfersEnabled = String(process.env.ENABLE_DEMO_TRANSFERS).toLowerCase() === "true";
 
 app.disable("x-powered-by");
-app.use(helmet({ crossOriginResourcePolicy: { policy: "same-site" } }));
+app.use(helmet({ crossOriginResourcePolicy: { policy: "same-site" }, contentSecurityPolicy: { directives: { styleSrc: ["\'self\'", "\'unsafe-inline\'"], fontSrc: ["\'self\'", "data:"], scriptSrc: ["\'self\'"], connectSrc: ["\'self\'"] } } }));
 app.use(express.json({ limit: "20kb" }));
 app.use(express.static(path.join(__dirname, "public"), { extensions: ["html"] }));
 
@@ -70,7 +71,7 @@ function requireDatabase(req, res, next) {
 
 app.get("/api/health", asyncRoute(async (_req, res) => {
   if (!pool) {
-    return res.status(503).json({ ok: false, database: "not_configured", message: "Configure the MYSQL_* environment variables." });
+    return res.status(503).json({ ok: false, database: "not_configured", transfersEnabled, message: "Configure the MYSQL_* environment variables." });
   }
   try {
     await pool.query("SELECT 1");
@@ -78,9 +79,9 @@ app.get("/api/health", asyncRoute(async (_req, res) => {
       "SELECT COUNT(*) AS table_count FROM information_schema.tables WHERE table_schema = ?",
       [DATABASE_NAME]
     );
-    res.json({ ok: true, database: "connected", databaseName: DATABASE_NAME, tableCount: Number(tables[0].table_count) });
+    res.json({ ok: true, database: "connected", databaseName: DATABASE_NAME, tableCount: Number(tables[0].table_count), transfersEnabled });
   } catch (error) {
-    res.status(503).json({ ok: false, database: "unreachable", message: "MySQL connection failed. Check the database host, credentials, TLS settings and schema." });
+    res.status(503).json({ ok: false, database: "unreachable", transfersEnabled, message: "MySQL connection failed. Check the database host, credentials, TLS settings and schema." });
   }
 }));
 
@@ -218,6 +219,7 @@ app.get("/api/fraud-events", requireDatabase, asyncRoute(async (_req, res) => {
 }));
 
 app.post("/api/transfers", requireDatabase, asyncRoute(async (req, res) => {
+  if (!transfersEnabled) return res.status(403).json({ error: "Transfers are disabled on this instance. Set ENABLE_DEMO_TRANSFERS=true only for a test database containing synthetic data." });
   const fromId = Number(req.body?.fromAccountId);
   const toId = Number(req.body?.toAccountId);
   const amount = Number(req.body?.amount);
