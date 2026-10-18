@@ -66,3 +66,6 @@ WITH monthly AS (SELECT DATE_FORMAT(transaction_time,'%Y-%m') AS month_key,SUM(C
 
 
 SELECT transaction_type,COUNT(*) AS attempted_count,SUM(CASE WHEN status='SUCCESS' THEN amount ELSE 0 END) AS successful_value,ROUND(100.0*SUM(CASE WHEN status='SUCCESS' THEN amount ELSE 0 END)/NULLIF((SELECT SUM(amount) FROM transactions WHERE status='SUCCESS'),0),2) AS share_of_successful_value_pct FROM transactions GROUP BY transaction_type ORDER BY successful_value DESC;
+
+
+SELECT DATE_FORMAT(COALESCE(s.settled_at,t.transaction_time),'%Y-%m') AS report_month,COUNT(*) AS settlement_rows,SUM(s.status='SETTLED') AS settled_count,SUM(s.status='PENDING') AS pending_count,SUM(s.status='FAILED') AS failed_count,SUM(CASE WHEN s.status='SETTLED' THEN s.settlement_amount ELSE 0 END) AS settled_value FROM settlements s JOIN transactions t ON t.transaction_id=s.transaction_id GROUP BY DATE_FORMAT(COALESCE(s.settled_at,t.transaction_time),'%Y-%m') ORDER BY report_month;
