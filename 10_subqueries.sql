@@ -60,3 +60,7 @@ ORDER BY l.principal DESC;
 
 -- Accounts whose balance exceeds the average for their own product type
 SELECT a.account_number,a.account_type,a.current_balance FROM accounts a WHERE a.current_balance>(SELECT AVG(a2.current_balance) FROM accounts a2 WHERE a2.account_type=a.account_type) ORDER BY a.account_type,a.current_balance DESC;
+
+
+-- Missing repayment rows can indicate incomplete demo or migrated data
+SELECT l.loan_id,l.loan_type,l.principal,l.status FROM loans l WHERE NOT EXISTS (SELECT 1 FROM loan_payments lp WHERE lp.loan_id=l.loan_id) ORDER BY l.loan_id;
