@@ -68,3 +68,7 @@ SELECT b.branch_code, b.branch_name, a.account_type, COUNT(a.account_id) AS acco
 
 -- Transfer rows with source, destination and originating ledger transaction
 SELECT tr.transfer_id,tr.initiated_at,tr.transfer_amount,tr.status,src.account_number AS source_account,dst.account_number AS destination_account,tx.reference_code AS debit_reference,tx.status AS debit_status FROM transfers tr JOIN accounts src ON src.account_id=tr.from_account_id JOIN accounts dst ON dst.account_id=tr.to_account_id JOIN transactions tx ON tx.transaction_id=tr.transaction_id ORDER BY tr.initiated_at DESC;
+
+
+-- Preserve customers even when they have no transaction rows
+SELECT c.customer_number,CONCAT(c.first_name,' ',c.last_name) AS customer_name,COUNT(t.transaction_id) AS ledger_rows,SUM(t.status='SUCCESS') AS successful_rows FROM customers c LEFT JOIN accounts a ON a.customer_id=c.customer_id LEFT JOIN transactions t ON t.account_id=a.account_id GROUP BY c.customer_id,c.customer_number,c.first_name,c.last_name ORDER BY ledger_rows DESC,customer_name;
