@@ -19,3 +19,9 @@ yarn-debug.log*
 Thumbs.db
 .vscode/
 .idea/
+
+# Local database backups and shell histories (never commit production exports)
+*.sql.gz
+*.dump
+*.bak
+.mysql_history
