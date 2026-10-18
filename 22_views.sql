@@ -51,3 +51,7 @@ WHERE s.status = 'PENDING';
 
 -- Review customers with the largest combined account balance
 SELECT customer_number,customer_name,account_count,total_balance,risk_level FROM v_customer_account_summary ORDER BY total_balance DESC LIMIT 20;
+
+
+-- Inspect daily ledger volume and successful value from the reusable view
+SELECT transaction_date,total_attempts,successful_count,failed_count,successful_value FROM v_transaction_daily_summary ORDER BY transaction_date DESC LIMIT 30;
