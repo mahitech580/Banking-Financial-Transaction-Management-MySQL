@@ -47,3 +47,6 @@ SELECT l.loan_type,COUNT(DISTINCT l.loan_id) AS loan_count,COUNT(lp.payment_id) 
 
 
 SELECT c.customer_number,CONCAT(c.first_name,' ',c.last_name) AS customer_name,COUNT(l.loan_id) AS loan_count,SUM(l.principal) AS principal_exposure,ROUND(AVG(l.interest_rate),2) AS average_annual_rate_pct FROM customers c JOIN loans l ON l.customer_id=c.customer_id WHERE l.status='ACTIVE' GROUP BY c.customer_id,c.customer_number,c.first_name,c.last_name ORDER BY principal_exposure DESC;
+
+
+SELECT l.loan_id,l.loan_type,COUNT(lp.payment_id) AS installments,SUM(lp.amount_paid>=lp.amount_due) AS completed_installments,ROUND(100.0*SUM(lp.amount_paid>=lp.amount_due)/NULLIF(COUNT(lp.payment_id),0),2) AS completion_pct FROM loans l LEFT JOIN loan_payments lp ON lp.loan_id=l.loan_id GROUP BY l.loan_id,l.loan_type ORDER BY completion_pct,l.loan_id;
