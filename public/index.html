@@ -6,10 +6,12 @@
   <meta name="theme-color" content="#111827">
   <meta name="description" content="Banking operations and financial transaction analytics powered by MySQL.">
   <title>Ledgerly — Banking Operations</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/styles.css">
   <script src="/app.js" defer></script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <a class="brand" href="#" data-page-link="overview" aria-label="Ledgerly home">
@@ -41,7 +43,7 @@
       <div class="sidebar-footer"><span class="avatar">M</span><span><strong>Mahi</strong><small>Administrator demo</small></span><span class="dots">···</span></div>
     </aside>
 
-    <main class="main-area">
+    <main class="main-area" id="main-content" tabindex="-1">
       <header class="topbar">
         <button class="mobile-menu" id="mobile-menu" aria-label="Toggle navigation">☰</button>
         <div class="breadcrumbs"><span>Workspace</span><b>/</b><strong id="breadcrumb-current">Overview</strong></div>
