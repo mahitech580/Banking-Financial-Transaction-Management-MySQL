@@ -45,3 +45,12 @@ SELECT status, COUNT(*) AS row_count,
 FROM transactions
 GROUP BY status
 ORDER BY status;
+
+
+-- Merchant linkage audit
+SELECT channel, COUNT(*) AS total_rows,
+       SUM(merchant_id IS NOT NULL) AS merchant_linked_rows,
+       SUM(merchant_id IS NULL) AS direct_or_unlinked_rows
+FROM transactions
+GROUP BY channel
+ORDER BY total_rows DESC;
