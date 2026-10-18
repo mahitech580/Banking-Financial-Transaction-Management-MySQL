@@ -57,3 +57,6 @@ ORDER BY CASE rule_based_review_band
 
 
 SELECT a.account_number,a.status,COUNT(t.transaction_id) AS transaction_count,SUM(t.status='FAILED') AS failed_count,SUM(t.status='REVERSED') AS reversed_count,MAX(t.amount) AS largest_attempt,MAX(f.risk_score) AS maximum_recorded_score FROM accounts a LEFT JOIN transactions t ON t.account_id=a.account_id LEFT JOIN fraud_events f ON f.transaction_id=t.transaction_id GROUP BY a.account_id,a.account_number,a.status ORDER BY maximum_recorded_score DESC,failed_count DESC;
+
+
+SELECT c.customer_number,CONCAT(c.first_name,' ',c.last_name) AS customer_name,COUNT(DISTINCT l.loan_id) AS loans,SUM(lp.status='LATE') AS late_installments,SUM(lp.status='MISSED') AS missed_installments,SUM(lp.amount_due-lp.amount_paid) AS scheduled_outstanding FROM customers c LEFT JOIN loans l ON l.customer_id=c.customer_id LEFT JOIN loan_payments lp ON lp.loan_id=l.loan_id GROUP BY c.customer_id,c.customer_number,c.first_name,c.last_name HAVING late_installments>0 OR missed_installments>0 ORDER BY missed_installments DESC,scheduled_outstanding DESC;
