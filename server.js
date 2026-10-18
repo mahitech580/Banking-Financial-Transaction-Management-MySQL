@@ -12,7 +12,17 @@ const DATABASE_NAME = process.env.MYSQL_DATABASE || (process.env.MYSQL_URL ? dec
 const transfersEnabled = String(process.env.ENABLE_DEMO_TRANSFERS).toLowerCase() === "true";
 
 app.disable("x-powered-by");
-app.use(helmet({ crossOriginResourcePolicy: { policy: "same-site" }, contentSecurityPolicy: { directives: { styleSrc: ["\'self\'", "\'unsafe-inline\'"], fontSrc: ["\'self\'", "data:"], scriptSrc: ["\'self\'"], connectSrc: ["\'self\'"] } } }));
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "same-site" },
+  contentSecurityPolicy: {
+    directives: {
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      fontSrc: ["'self'", "data:"],
+      scriptSrc: ["'self'"],
+      connectSrc: ["'self'"]
+    }
+  }
+}));
 app.use(express.json({ limit: "20kb" }));
 app.use(express.static(path.join(__dirname, "public"), { extensions: ["html"] }));
 
