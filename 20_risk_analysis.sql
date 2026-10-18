@@ -54,3 +54,6 @@ LEFT JOIN fraud_metrics AS fm ON fm.customer_id = c.customer_id
 ORDER BY CASE rule_based_review_band
            WHEN 'HIGH REVIEW' THEN 1 WHEN 'REVIEW' THEN 2 ELSE 3 END,
          maximum_flag_score DESC, customer_name;
+
+
+SELECT a.account_number,a.status,COUNT(t.transaction_id) AS transaction_count,SUM(t.status='FAILED') AS failed_count,SUM(t.status='REVERSED') AS reversed_count,MAX(t.amount) AS largest_attempt,MAX(f.risk_score) AS maximum_recorded_score FROM accounts a LEFT JOIN transactions t ON t.account_id=a.account_id LEFT JOIN fraud_events f ON f.transaction_id=t.transaction_id GROUP BY a.account_id,a.account_number,a.status ORDER BY maximum_recorded_score DESC,failed_count DESC;
