@@ -44,3 +44,6 @@ FROM loans AS l
 LEFT JOIN loan_payments AS lp ON lp.loan_id = l.loan_id
 GROUP BY l.loan_id, l.loan_type
 ORDER BY completion_rate_pct, l.loan_id;
+
+
+SELECT s.settlement_id,t.reference_code,s.status,s.settlement_amount,s.settled_at,DATEDIFF(CURRENT_DATE,DATE(COALESCE(s.settled_at,t.transaction_time))) AS age_days FROM settlements s JOIN transactions t ON t.transaction_id=s.transaction_id WHERE s.status IN ('PENDING','FAILED') ORDER BY age_days DESC,s.settlement_amount DESC;
