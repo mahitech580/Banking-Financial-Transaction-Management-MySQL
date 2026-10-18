@@ -67,7 +67,7 @@ Run each file in MySQL Workbench or the MySQL CLI in the following order:
 9. Run `08_basic_queries.sql` through `21_financial_analytics.sql` as needed.
 10. Run `22_views.sql`, `23_stored_procedures.sql`, `24_functions.sql`, and `25_triggers.sql`.
 11. Run `27_indexes.sql` once, then explore `28_query_optimization.sql`.
-12. Run `26_transactions.sql) only when you explicitly want to execute a sample transfer and change the demo balances.
+12. Run `26_transactions.sql` only when you explicitly want to execute a sample transfer and change the demo balances.
 
 Scripts `04`–`07` are initial seed inserts and should be run **once on a fresh schema**. They are not intended to be replayed over existing records. For a clean reset, manually drop the local demo schema before setup; `01_database_schema.sql` intentionally does not drop existing data.
 
