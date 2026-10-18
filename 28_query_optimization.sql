@@ -57,3 +57,7 @@ ANALYZE TABLE transactions, accounts, loan_payments, card_transactions;
 
 -- Prefer a half-open range over DATE(transaction_time)=... for index-friendly filtering.
 EXPLAIN SELECT reference_code,amount,transaction_time FROM transactions WHERE transaction_time>='2026-10-18 00:00:00' AND transaction_time<'2026-10-19 00:00:00' ORDER BY transaction_time;
+
+
+-- Inspect the access path for account + status + time predicates.
+EXPLAIN SELECT transaction_id,reference_code,amount,transaction_time FROM transactions WHERE account_id=1 AND status='SUCCESS' AND transaction_time>='2026-10-01' AND transaction_time<'2026-11-01' ORDER BY transaction_time DESC LIMIT 30;
