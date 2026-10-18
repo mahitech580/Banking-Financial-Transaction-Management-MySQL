@@ -47,3 +47,7 @@ SELECT month_key, successful_value,
        successful_value - LAG(successful_value) OVER (ORDER BY month_key) AS change_from_previous_month
 FROM monthly
 ORDER BY month_key;
+
+
+-- Return the latest successful transaction for each account
+WITH ranked AS (SELECT t.*,ROW_NUMBER() OVER(PARTITION BY account_id ORDER BY transaction_time DESC,transaction_id DESC) AS rn FROM transactions t WHERE status='SUCCESS') SELECT account_id,reference_code,amount,transaction_time FROM ranked WHERE rn=1 ORDER BY account_id;
