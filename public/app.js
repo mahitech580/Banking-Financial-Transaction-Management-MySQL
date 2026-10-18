@@ -2,7 +2,7 @@
   "use strict";
 
   const $ = (selector) => document.querySelector(selector);
-  const cache = { accounts: [], customers: [], transactions: [], loans: [], fraud: [], analytics: null };
+  const cache = { accounts: [], customers: [], transactions: [], branches: [], cards: [], loans: [], repayments: [], settlements: [], disputes: [], fraud: [], analytics: null };
   let activePage = "overview";
   let searchTimer;
 
@@ -257,6 +257,69 @@
     }
   }
 
+
+  async function loadBranches() {
+    try {
+      const result = await api("/api/branches");
+      const rows = result.data || [];
+      $("#branches-rows").innerHTML = rows.length ? rows.map((b) => `<tr>
+        <td><div class="table-main">${safe(b.branch_name)}</div><div class="table-sub">ID #${safe(b.branch_id)}</div></td>
+        <td>${safe(b.branch_code)}</td><td>${safe(b.city)}, ${safe(b.state)}</td>
+        <td>${number(b.customer_count)}</td><td>${number(b.account_count)}</td><td class="amount-positive">${currency(b.total_balance)}</td>
+      </tr>`).join("") : '<tr><td colspan="6" class="table-loading">No branches found.</td></tr>';
+    } catch (error) { setTableMessage("branches-rows", 6, error.message, true); throw error; }
+  }
+
+  async function loadCards() {
+    try {
+      const result = await api("/api/cards");
+      cache.cards = result.data || [];
+      $("#cards-rows").innerHTML = cache.cards.length ? cache.cards.map((cd) => `<tr>
+        <td><div class="table-main">•••• ${safe(String(cd.card_number || "").slice(-4))}</div><div class="table-sub">Card #${safe(cd.card_id)}</div></td>
+        <td><div class="table-main">${safe(cd.customer_name)}</div><div class="table-sub">${safe(cd.customer_number)}</div></td>
+        <td>${safe(cd.account_number)}</td><td>${safe(cd.card_type)}</td><td>${currency(cd.credit_limit)}</td>
+        <td>${dateOnly(cd.issued_at)}</td><td>${badge(cd.status)}</td>
+      </tr>`).join("") : '<tr><td colspan="7" class="table-loading">No card records found. Run 29_demo_operations_data.sql for sample cards.</td></tr>';
+    } catch (error) { setTableMessage("cards-rows", 7, error.message, true); throw error; }
+  }
+
+  async function loadRepayments() {
+    try {
+      const result = await api("/api/repayments");
+      cache.repayments = result.data || [];
+      $("#repayments-rows").innerHTML = cache.repayments.length ? cache.repayments.map((p) => `<tr>
+        <td><div class="table-main">PMT-${safe(p.payment_id)}</div><div class="table-sub">Loan #${safe(p.loan_id)}</div></td>
+        <td><div class="table-main">${safe(p.customer_name)}</div><div class="table-sub">${safe(p.loan_type)}</div></td>
+        <td>${dateOnly(p.due_date)}</td><td>${dateOnly(p.paid_date)}</td><td>${currency(p.amount_due)}</td>
+        <td class="amount-positive">${currency(p.amount_paid)}</td><td>${badge(p.status)}</td>
+      </tr>`).join("") : '<tr><td colspan="7" class="table-loading">No repayments found. Run 29_demo_operations_data.sql for sample payments.</td></tr>';
+    } catch (error) { setTableMessage("repayments-rows", 7, error.message, true); throw error; }
+  }
+
+  async function loadSettlements() {
+    try {
+      const result = await api("/api/settlements");
+      cache.settlements = result.data || [];
+      $("#settlements-rows").innerHTML = cache.settlements.length ? cache.settlements.map((item) => `<tr>
+        <td><div class="table-main">STL-${safe(item.settlement_id)}</div></td><td>${safe(item.reference_code)}</td>
+        <td><div class="table-main">${safe(item.customer_name)}</div><div class="table-sub">${safe(item.account_number)}</div></td>
+        <td>${dateTime(item.transaction_time)}</td><td>${dateTime(item.settled_at)}</td><td>${currency(item.settlement_amount)}</td><td>${badge(item.status)}</td>
+      </tr>`).join("") : '<tr><td colspan="7" class="table-loading">No settlement records found. Run 29_demo_operations_data.sql for samples.</td></tr>';
+    } catch (error) { setTableMessage("settlements-rows", 7, error.message, true); throw error; }
+  }
+
+  async function loadDisputes() {
+    try {
+      const result = await api("/api/disputes");
+      cache.disputes = result.data || [];
+      $("#disputes-rows").innerHTML = cache.disputes.length ? cache.disputes.map((item) => `<tr>
+        <td>${dateTime(item.opened_at)}</td><td><div class="table-main">${safe(item.reference_code)}</div></td>
+        <td><div class="table-main">${safe(item.customer_name)}</div><div class="table-sub">${safe(item.account_number)}</div></td>
+        <td>${safe(item.reason)}</td><td>${currency(item.disputed_amount)}</td><td>${badge(item.status)}</td>
+      </tr>`).join("") : '<tr><td colspan="6" class="table-loading">No dispute records found. Run 29_demo_operations_data.sql for samples.</td></tr>';
+    } catch (error) { setTableMessage("disputes-rows", 6, error.message, true); throw error; }
+  }
+
   async function loadFraud() {
     try {
       const result = await api("/api/fraud-events");
@@ -319,7 +382,12 @@
       if (page === "customers") await loadCustomers();
       if (page === "transactions") await loadTransactions();
       if (page === "analytics") await loadAnalytics();
+      if (page === "branches") await loadBranches();
+      if (page === "cards") await loadCards();
       if (page === "loans") await loadLoans();
+      if (page === "repayments") await loadRepayments();
+      if (page === "settlements") await loadSettlements();
+      if (page === "disputes") await loadDisputes();
       if (page === "fraud") await loadFraud();
       if (page === "transfer") await loadTransferAccounts();
     } catch (error) {
