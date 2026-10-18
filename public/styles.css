@@ -254,3 +254,14 @@ td:first-child { color: #36473c; font-weight: 600; }
   .bar-chart { padding-inline: 10px; gap: 4px; }
   .bar-value { font-size: 7px; }
 }
+
+
+/* Respect reduced-motion preferences without removing state feedback. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
