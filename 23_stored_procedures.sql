@@ -159,3 +159,11 @@ CALL get_customer_transactions(1, 20, 0);
 
 -- Run a read-only summary after data loading.
 CALL get_customer_financial_summary(1);
+
+
+-- Transfer procedure safety notes:
+-- * Do not invoke sp_transfer_funds against real accounts.
+-- * Test with a dedicated schema and synthetic rows.
+-- * Verify balances and ledger rows after each test.
+-- * The procedure rolls back SQL exceptions, but production services still need
+--   authentication, authorization, idempotency keys, reconciliation and monitoring.
