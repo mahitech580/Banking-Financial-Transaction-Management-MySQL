@@ -55,3 +55,8 @@ SELECT customer_number,customer_name,account_count,total_balance,risk_level FROM
 
 -- Inspect daily ledger volume and successful value from the reusable view
 SELECT transaction_date,total_attempts,successful_count,failed_count,successful_value FROM v_transaction_daily_summary ORDER BY transaction_date DESC LIMIT 30;
+
+
+-- Reuse views to review unresolved work without duplicating joins
+SELECT * FROM v_fraud_review_queue ORDER BY risk_score DESC,detected_at DESC;
+SELECT * FROM v_pending_settlement_queue ORDER BY transaction_time;
