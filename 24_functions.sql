@@ -56,3 +56,7 @@ DELIMITER ;
 -- Examples:
 -- SELECT calculate_risk_band(88.50);
 -- SELECT calculate_emi(300000.00, 8.250, 48);
+
+
+-- Boundary values demonstrate the declared score bands.
+SELECT calculate_risk_band(0.00) AS zero_score,calculate_risk_band(49.99) AS low_upper_edge,calculate_risk_band(50.00) AS medium_lower_edge,calculate_risk_band(79.99) AS medium_upper_edge,calculate_risk_band(80.00) AS high_lower_edge,calculate_risk_band(100.00) AS maximum_score;
