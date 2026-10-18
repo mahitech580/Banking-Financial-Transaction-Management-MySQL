@@ -49,3 +49,12 @@ FROM customers
 WHERE email LIKE '%@example.com'
 ORDER BY customer_number
 LIMIT 20;
+
+
+-- NULL-safe status summary
+SELECT COALESCE(status, 'UNSPECIFIED') AS transaction_status,
+       COUNT(*) AS row_count,
+       COALESCE(SUM(amount), 0) AS attempted_value
+FROM transactions
+GROUP BY COALESCE(status, 'UNSPECIFIED')
+ORDER BY row_count DESC;
