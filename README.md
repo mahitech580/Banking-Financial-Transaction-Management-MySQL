@@ -176,3 +176,12 @@ GitHub: https://github.com/mahitech580
 ## License
 
 MIT License. See [LICENSE](LICENSE).
+
+
+## Data Interpretation Guardrails
+
+- Ledger rows store attempted transactions; analytical totals labeled `successful_value` include only rows with `status = 'SUCCESS'`.
+- A transfer is represented by a transfer record linked to its originating debit transaction, alongside the matching credit ledger row.
+- Fraud scores and activity thresholds in the SQL examples are demonstration rules for human review, not a fraud model or financial decision.
+- The core numbered seed scripts `04`–`07` are intended for a fresh setup. `29_demo_operations_data.sql` is the optional repeatable add-on for operation-specific demo screens.
+- Before presenting analytics, compare the dashboard numbers against the relevant SQL summary and confirm the database health endpoint reports a connected schema.
