@@ -43,3 +43,7 @@ SELECT reference_code, account_id, amount, transaction_time, channel
 FROM transactions
 WHERE status = 'SUCCESS' AND amount >= 50000
 ORDER BY amount DESC, transaction_time DESC;
+
+
+-- Daily success rate uses all ledger rows as the denominator
+SELECT DATE(transaction_time) AS event_day,COUNT(*) AS attempts,SUM(status='SUCCESS') AS successes,ROUND(100.0*SUM(status='SUCCESS')/NULLIF(COUNT(*),0),2) AS success_rate_pct FROM transactions GROUP BY DATE(transaction_time) ORDER BY event_day;
