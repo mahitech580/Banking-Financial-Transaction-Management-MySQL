@@ -40,3 +40,6 @@ ORDER BY ct.amount DESC;
 
 
 SELECT c.card_type,ct.status,COUNT(*) AS attempt_count,SUM(ct.amount) AS attempted_value,ROUND(AVG(ct.amount),2) AS average_amount FROM card_transactions ct JOIN cards c ON c.card_id=ct.card_id GROUP BY c.card_type,ct.status ORDER BY c.card_type,attempt_count DESC;
+
+
+SELECT cu.customer_number,CONCAT(cu.first_name,' ',cu.last_name) AS customer_name,COUNT(c.card_id) AS card_count,SUM(c.status='ACTIVE') AS active_cards,SUM(c.card_type='CREDIT') AS credit_cards,COALESCE(SUM(c.credit_limit),0) AS total_credit_limit FROM customers cu LEFT JOIN cards c ON c.customer_id=cu.customer_id GROUP BY cu.customer_id,cu.customer_number,cu.first_name,cu.last_name ORDER BY total_credit_limit DESC;
