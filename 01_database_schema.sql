@@ -20,3 +20,10 @@ SELECT DATABASE() AS active_schema, VERSION() AS mysql_version;
 SELECT schema_name, default_character_set_name, default_collation_name
 FROM information_schema.schemata
 WHERE schema_name = 'banking_financial_management';
+
+
+-- Preflight check
+-- This read-only check is safe to run before creating tables.
+SELECT COUNT(*) AS existing_table_count
+FROM information_schema.tables
+WHERE table_schema = 'banking_financial_management';
