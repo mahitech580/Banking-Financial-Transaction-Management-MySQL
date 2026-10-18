@@ -108,3 +108,12 @@ UNION ALL
 SELECT t.transaction_id, NULL, t.amount, 'PENDING'
 FROM transactions t WHERE t.reference_code = 'TX10011'
   AND NOT EXISTS (SELECT 1 FROM settlements s WHERE s.transaction_id = t.transaction_id);
+
+
+-- Confirm that optional operation records exist after the seed script runs.
+SELECT 'cards' AS entity,COUNT(*) AS row_count FROM cards WHERE card_number LIKE 'DEMO-CARD-%'
+UNION ALL SELECT 'loans',COUNT(*) FROM loans
+UNION ALL SELECT 'repayments',COUNT(*) FROM loan_payments
+UNION ALL SELECT 'fraud events',COUNT(*) FROM fraud_events
+UNION ALL SELECT 'disputes',COUNT(*) FROM disputes
+UNION ALL SELECT 'settlements',COUNT(*) FROM settlements;
