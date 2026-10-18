@@ -46,6 +46,12 @@ flowchart LR
 
 The SQL exercises illustrate relational querying and business analysis; rule-based alerts are investigative signals, not proof of fraud or a real credit decision.
 
+### Advanced SQL case-study library
+
+The `advanced_sql/` directory contains **65 standalone, read-only analytical examples** named `001` through `065`. They extend the core modules with monthly growth, medians and percentiles, account/customer rankings, branch activity, loan repayment signals, fraud review patterns, settlement reconciliation, dispute reporting, and card/account portfolio analysis.
+
+Run these scripts only after the required base tables exist. Load `29_demo_operations_data.sql` before card, loan, fraud, dispute, and settlement reports when those optional tables would otherwise be empty. Each file starts with its business question; run examples individually in MySQL Workbench or the MySQL CLI and review the result before adapting it to another dataset.
+
 ## Requirements
 
 - MySQL **8.0.18+** (needed for the modern SQL features documented in the optimization exercises)
