@@ -7,3 +7,10 @@ ALTER TABLE accounts
 
 -- Loan, installment, transaction and fraud score checks are defined alongside their tables.
 -- Cross-row rules such as sufficient funds must be enforced transactionally, not with CHECK.
+
+
+-- Balance integrity audit
+-- Any returned row violates the non-negative balance rule.
+SELECT account_id, account_number, current_balance
+FROM accounts
+WHERE current_balance < 0;
