@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: banking-financial-transaction-management
+    runtime: node
+    plan: free
+    region: singapore
+    branch: main
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /healthz
+    autoDeployTrigger: commit
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MYSQL_URL
+        sync: false
+      - key: MYSQL_SSL
+        value: "false"
+      - key: ENABLE_DEMO_TRANSFERS
+        value: "false"
