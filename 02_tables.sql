@@ -186,3 +186,11 @@ CREATE TABLE IF NOT EXISTS audit_log (
   action_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   details JSON NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- Schema inventory
+-- Review all tables and storage engines after schema creation.
+SELECT table_name, engine, table_rows
+FROM information_schema.tables
+WHERE table_schema = DATABASE()
+ORDER BY table_name;
