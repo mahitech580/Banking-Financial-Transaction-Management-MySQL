@@ -34,3 +34,7 @@ CREATE INDEX idx_settlements_status_time
 
 CREATE INDEX idx_audit_log_entity_time
   ON audit_log (entity_name, entity_id, action_at DESC);
+
+
+-- Review created indexes and uniqueness flags after installation.
+SHOW INDEX FROM transactions;
