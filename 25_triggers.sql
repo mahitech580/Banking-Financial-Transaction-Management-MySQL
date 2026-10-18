@@ -67,3 +67,7 @@ DELIMITER ;
 
 -- Inspect most recent trigger-created audit records.
 SELECT audit_id,entity_name,entity_id,action_type,action_at,details FROM audit_log ORDER BY action_at DESC,audit_id DESC LIMIT 50;
+
+
+-- This query should return no rows when payment validation rules hold.
+SELECT payment_id,loan_id,amount_due,amount_paid,status FROM loan_payments WHERE amount_due<=0 OR amount_paid<0 OR amount_paid>amount_due OR (status='PAID' AND amount_paid<amount_due);
