@@ -63,3 +63,7 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+
+-- Inspect most recent trigger-created audit records.
+SELECT audit_id,entity_name,entity_id,action_type,action_at,details FROM audit_log ORDER BY action_at DESC,audit_id DESC LIMIT 50;
