@@ -60,3 +60,6 @@ FROM settlements AS s
 JOIN transactions AS t ON t.transaction_id = s.transaction_id
 GROUP BY DATE_FORMAT(COALESCE(settled_at, transaction_time), '%Y-%m'), s.status
 ORDER BY reporting_month, s.status;
+
+
+WITH monthly AS (SELECT DATE_FORMAT(transaction_time,'%Y-%m') AS month_key,SUM(CASE WHEN status='SUCCESS' THEN amount ELSE 0 END) AS successful_value FROM transactions GROUP BY DATE_FORMAT(transaction_time,'%Y-%m')) SELECT month_key,successful_value,SUM(successful_value) OVER(ORDER BY month_key ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumulative_successful_value FROM monthly ORDER BY month_key;
