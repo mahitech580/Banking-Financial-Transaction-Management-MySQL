@@ -53,3 +53,7 @@ ANALYZE TABLE transactions, accounts, loan_payments, card_transactions;
 -- * Compare estimated rows with actual rows on realistic data.
 -- * Avoid SELECT * in production endpoints.
 -- * Re-check write cost and storage after adding indexes.
+
+
+-- Prefer a half-open range over DATE(transaction_time)=... for index-friendly filtering.
+EXPLAIN SELECT reference_code,amount,transaction_time FROM transactions WHERE transaction_time>='2026-10-18 00:00:00' AND transaction_time<'2026-10-19 00:00:00' ORDER BY transaction_time;
