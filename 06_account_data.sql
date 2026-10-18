@@ -15,3 +15,12 @@ VALUES
   ('SB100008',8,3,'SAVINGS','2024-05-05','ACTIVE',25500.00),
   ('SB100009',9,1,'SAVINGS','2022-08-18','ACTIVE',77500.00),
   ('SB100010',10,2,'SAVINGS','2023-01-07','ACTIVE',39500.00);
+
+
+-- Account portfolio summary
+SELECT b.branch_name, a.account_type, COUNT(*) AS account_count,
+       SUM(a.current_balance) AS portfolio_balance
+FROM accounts AS a
+JOIN branches AS b ON b.branch_id = a.branch_id
+GROUP BY b.branch_id, b.branch_name, a.account_type
+ORDER BY portfolio_balance DESC;
