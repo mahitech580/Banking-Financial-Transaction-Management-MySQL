@@ -8,3 +8,8 @@ CREATE DATABASE IF NOT EXISTS banking_financial_management
   COLLATE utf8mb4_0900_ai_ci;
 
 USE banking_financial_management;
+
+
+-- Bootstrap verification
+-- Verify that the expected schema is active before running dependent scripts.
+SELECT DATABASE() AS active_schema, VERSION() AS mysql_version;
