@@ -61,3 +61,8 @@ EXPLAIN SELECT reference_code,amount,transaction_time FROM transactions WHERE tr
 
 -- Inspect the access path for account + status + time predicates.
 EXPLAIN SELECT transaction_id,reference_code,amount,transaction_time FROM transactions WHERE account_id=1 AND status='SUCCESS' AND transaction_time>='2026-10-01' AND transaction_time<'2026-11-01' ORDER BY transaction_time DESC LIMIT 30;
+
+
+-- On MySQL 8.0.18+, EXPLAIN ANALYZE executes the SELECT and reports actual row/timing data.
+-- Run manually on a representative test dataset, then compare estimated rows with actual rows.
+-- EXPLAIN ANALYZE SELECT transaction_id,amount FROM transactions WHERE account_id=1 ORDER BY transaction_time DESC LIMIT 20;
