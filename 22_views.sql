@@ -47,3 +47,7 @@ SELECT s.settlement_id, s.transaction_id, t.reference_code, t.transaction_time,
 FROM settlements AS s
 JOIN transactions AS t ON t.transaction_id = s.transaction_id
 WHERE s.status = 'PENDING';
+
+
+-- Review customers with the largest combined account balance
+SELECT customer_number,customer_name,account_count,total_balance,risk_level FROM v_customer_account_summary ORDER BY total_balance DESC LIMIT 20;
