@@ -27,7 +27,7 @@ The hosted dashboard is a portfolio demonstration, not a real banking service. U
    29_demo_operations_data.sql   (recommended demo records)
    ```
 
-3. The numbered query, analytics, view, procedure, function, trigger, transaction and index scripts can then be run as needed. Note that `01_database_schema.sql` drops and recreates the project database, so run it only against a disposable demo database.
+3. The numbered query, analytics, view, procedure, function, trigger, transaction and index scripts can then be run as needed. `01_database_schema.sql` uses `CREATE DATABASE IF NOT EXISTS` and does not delete existing records. If you need a clean reset, manually drop only a disposable demo schema before running setup again.
 
 ## Start the application
 
