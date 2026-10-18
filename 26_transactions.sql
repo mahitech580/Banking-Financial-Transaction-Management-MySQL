@@ -32,3 +32,7 @@ ORDER BY account_id;
 
 -- Inspect account balances after the transfer procedure has committed.
 SELECT account_id,account_number,current_balance,status FROM accounts WHERE account_id IN (1,2) ORDER BY account_id;
+
+
+-- Compare recorded transfer metadata to the originating debit ledger row.
+SELECT tr.transfer_id,tr.transfer_amount,tr.status AS transfer_status,tx.reference_code,tx.amount AS ledger_amount,tx.transaction_type,tx.status AS ledger_status FROM transfers tr JOIN transactions tx ON tx.transaction_id=tr.transaction_id ORDER BY tr.transfer_id DESC LIMIT 25;
