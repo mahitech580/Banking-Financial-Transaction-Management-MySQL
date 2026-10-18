@@ -12,3 +12,11 @@ INSERT INTO merchants (merchant_name, merchant_category, city, risk_level) VALUE
   ('Tech Store', 'Electronics', 'Bengaluru', 'MEDIUM'),
   ('Quick Eats', 'Food', 'Chennai', 'LOW'),
   ('Online Marketplace', 'Ecommerce', 'Hyderabad', 'HIGH');
+
+
+-- Branch reference coverage
+SELECT state, COUNT(*) AS branch_count,
+       GROUP_CONCAT(branch_code ORDER BY branch_code SEPARATOR ', ') AS branch_codes
+FROM branches
+GROUP BY state
+ORDER BY branch_count DESC, state;
