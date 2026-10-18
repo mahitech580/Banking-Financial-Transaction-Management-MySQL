@@ -19,6 +19,8 @@
   --shadow: 0 4px 20px rgba(31, 56, 42, .035);
 }
 * { box-sizing: border-box; }
+.skip-link { position: fixed; top: 8px; left: 8px; z-index: 1000; transform: translateY(-160%); padding: 10px 14px; border-radius: 8px; background: #19251f; color: #fff; font-size: 12px; font-weight: 700; box-shadow: 0 6px 20px rgba(0,0,0,.18); }
+.skip-link:focus { transform: translateY(0); outline: 3px solid #78c59b; outline-offset: 3px; }
 body { margin: 0; background: var(--canvas); color: var(--ink); font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 13px; -webkit-font-smoothing: antialiased; }
 button, input, select { font: inherit; }
 button { cursor: pointer; }
