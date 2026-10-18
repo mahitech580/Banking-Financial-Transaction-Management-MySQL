@@ -50,3 +50,13 @@ FROM (SELECT 'BRANCH' AS channel UNION ALL SELECT 'ATM' UNION ALL SELECT 'ONLINE
 CROSS JOIN (SELECT 'SUCCESS' AS status UNION ALL SELECT 'PENDING'
             UNION ALL SELECT 'FAILED' UNION ALL SELECT 'REVERSED') AS s
 ORDER BY ch.channel, s.status;
+
+
+-- Branch and account join
+SELECT b.branch_code, b.branch_name, a.account_type,
+       COUNT(a.account_id) AS account_count,
+       COALESCE(SUM(a.current_balance), 0) AS total_balance
+FROM branches AS b
+LEFT JOIN accounts AS a ON a.branch_id = b.branch_id
+GROUP BY b.branch_id, b.branch_code, b.branch_name, a.account_type
+ORDER BY b.branch_name, total_balance DESC;
