@@ -12,9 +12,11 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      # Configure the database URL as a secret in the Render dashboard.
       - key: MYSQL_URL
         sync: false
       - key: MYSQL_SSL
         value: "false"
+      # Keep demo writes off on public deployments.
       - key: ENABLE_DEMO_TRANSFERS
         value: "false"
