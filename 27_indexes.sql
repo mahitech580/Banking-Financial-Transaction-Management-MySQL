@@ -38,3 +38,7 @@ CREATE INDEX idx_audit_log_entity_time
 
 -- Review created indexes and uniqueness flags after installation.
 SHOW INDEX FROM transactions;
+
+
+-- Check whether the account/time index supports an account history lookup.
+EXPLAIN SELECT transaction_id,reference_code,amount,transaction_time FROM transactions WHERE account_id=1 ORDER BY transaction_time DESC LIMIT 20;
