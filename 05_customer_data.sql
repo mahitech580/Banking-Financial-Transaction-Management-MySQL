@@ -22,3 +22,15 @@ SELECT risk_level, COUNT(*) AS customer_count,
 FROM customers
 GROUP BY risk_level
 ORDER BY FIELD(risk_level, 'HIGH', 'MEDIUM', 'LOW');
+
+
+-- Customer tenure analysis
+SELECT CASE
+         WHEN TIMESTAMPDIFF(YEAR, customer_since, CURRENT_DATE) >= 5 THEN '5+ years'
+         WHEN TIMESTAMPDIFF(YEAR, customer_since, CURRENT_DATE) >= 2 THEN '2-4 years'
+         ELSE 'Under 2 years'
+       END AS tenure_band,
+       COUNT(*) AS customer_count
+FROM customers
+GROUP BY tenure_band
+ORDER BY customer_count DESC;
