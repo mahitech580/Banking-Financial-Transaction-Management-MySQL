@@ -60,3 +60,7 @@ FROM branches AS b
 LEFT JOIN accounts AS a ON a.branch_id = b.branch_id
 GROUP BY b.branch_id, b.branch_code, b.branch_name, a.account_type
 ORDER BY b.branch_name, total_balance DESC;
+
+
+-- Branch and account rollup
+SELECT b.branch_code, b.branch_name, a.account_type, COUNT(a.account_id) AS account_count, COALESCE(SUM(a.current_balance),0) AS total_balance FROM branches b LEFT JOIN accounts a ON a.branch_id=b.branch_id GROUP BY b.branch_id,b.branch_code,b.branch_name,a.account_type ORDER BY b.branch_name,total_balance DESC;
