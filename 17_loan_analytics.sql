@@ -1,3 +1,43 @@
+-- Loan portfolio, repayments, overdue installments and exposure.
 USE banking_financial_management;
-SELECT loan_type,COUNT(*) loans,SUM(principal) principal,AVG(interest_rate) avg_rate,AVG(tenure_months) avg_tenure FROM loans GROUP BY loan_type;
-SELECT status,COUNT(*) installments,SUM(amount_due) due,SUM(amount_paid) paid FROM loan_payments GROUP BY status;
+
+-- 1. Portfolio totals by product
+SELECT loan_type, status, COUNT(*) AS loan_count,
+       SUM(principal) AS principal_exposure,
+       ROUND(AVG(interest_rate), 3) AS average_annual_rate_pct,
+       ROUND(AVG(tenure_months), 1) AS average_tenure_months
+FROM loans
+GROUP BY loan_type, status
+ORDER BY principal_exposure DESC;
+
+-- 2. Repayment performance by loan. Join pre-aggregated payments to avoid double counting.
+WITH repayment_metrics AS (
+  SELECT loan_id, COUNT(*) AS installment_count,
+         SUM(amount_due) AS total_due,
+         SUM(amount_paid) AS total_paid,
+         SUM(status IN ('LATE','MISSED')) AS late_or_missed_count,
+         SUM(status = 'MISSED') AS missed_count
+  FROM loan_payments
+  GROUP BY loan_id
+)
+SELECT l.loan_id, l.loan_type, l.principal, l.status,
+       CONCAT(c.first_name, ' ', c.last_name) AS customer_name,
+       COALESCE(r.installment_count, 0) AS installment_count,
+       COALESCE(r.total_due, 0) AS total_due,
+       COALESCE(r.total_paid, 0) AS total_paid,
+       COALESCE(r.total_due, 0) - COALESCE(r.total_paid, 0) AS remaining_scheduled_amount,
+       COALESCE(r.late_or_missed_count, 0) AS late_or_missed_count,
+       COALESCE(r.missed_count, 0) AS missed_count
+FROM loans AS l
+JOIN customers AS c ON c.customer_id = l.customer_id
+LEFT JOIN repayment_metrics AS r ON r.loan_id = l.loan_id
+ORDER BY late_or_missed_count DESC, l.principal DESC;
+
+-- 3. Overdue installments by days past due
+SELECT lp.payment_id, lp.loan_id, lp.due_date,
+       DATEDIFF(CURRENT_DATE, lp.due_date) AS days_past_due,
+       lp.amount_due, lp.amount_paid, lp.status
+FROM loan_payments AS lp
+WHERE lp.due_date < CURRENT_DATE
+  AND lp.amount_paid < lp.amount_due
+ORDER BY days_past_due DESC, lp.amount_due DESC;
