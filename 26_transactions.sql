@@ -28,3 +28,7 @@ SELECT account_number, current_balance, status
 FROM accounts
 WHERE account_id IN (1, 2)
 ORDER BY account_id;
+
+
+-- Inspect account balances after the transfer procedure has committed.
+SELECT account_id,account_number,current_balance,status FROM accounts WHERE account_id IN (1,2) ORDER BY account_id;
