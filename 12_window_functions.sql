@@ -51,3 +51,7 @@ ORDER BY month_key;
 
 -- Return the latest successful transaction for each account
 WITH ranked AS (SELECT t.*,ROW_NUMBER() OVER(PARTITION BY account_id ORDER BY transaction_time DESC,transaction_id DESC) AS rn FROM transactions t WHERE status='SUCCESS') SELECT account_id,reference_code,amount,transaction_time FROM ranked WHERE rn=1 ORDER BY account_id;
+
+
+-- Three-row moving average, ordered deterministically per account
+SELECT account_id,reference_code,transaction_time,amount,ROUND(AVG(amount) OVER(PARTITION BY account_id ORDER BY transaction_time,transaction_id ROWS BETWEEN 2 PRECEDING AND CURRENT ROW),2) AS moving_avg_3_rows FROM transactions WHERE status='SUCCESS' ORDER BY account_id,transaction_time,transaction_id;
