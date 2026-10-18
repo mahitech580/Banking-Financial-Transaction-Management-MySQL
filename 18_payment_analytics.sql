@@ -47,3 +47,6 @@ ORDER BY completion_rate_pct, l.loan_id;
 
 
 SELECT s.settlement_id,t.reference_code,s.status,s.settlement_amount,s.settled_at,DATEDIFF(CURRENT_DATE,DATE(COALESCE(s.settled_at,t.transaction_time))) AS age_days FROM settlements s JOIN transactions t ON t.transaction_id=s.transaction_id WHERE s.status IN ('PENDING','FAILED') ORDER BY age_days DESC,s.settlement_amount DESC;
+
+
+SELECT status,COUNT(*) AS dispute_count,SUM(disputed_amount) AS disputed_amount,ROUND(AVG(disputed_amount),2) AS average_dispute_amount FROM disputes GROUP BY status ORDER BY disputed_amount DESC;
