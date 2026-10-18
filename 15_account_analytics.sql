@@ -40,3 +40,7 @@ GROUP BY a.account_id, a.account_number, a.account_type, a.status, a.current_bal
 HAVING MAX(t.transaction_time) IS NULL
     OR MAX(t.transaction_time) < CURRENT_DATE - INTERVAL 90 DAY
 ORDER BY last_successful_activity;
+
+
+-- Compare successful credits and debits independently of the stored snapshot balance
+SELECT a.account_number,SUM(CASE WHEN t.status='SUCCESS' AND t.transaction_type='CREDIT' THEN t.amount ELSE 0 END) AS successful_credits,SUM(CASE WHEN t.status='SUCCESS' AND t.transaction_type='DEBIT' THEN t.amount ELSE 0 END) AS successful_debits,SUM(CASE WHEN t.status='SUCCESS' AND t.transaction_type='CREDIT' THEN t.amount WHEN t.status='SUCCESS' AND t.transaction_type='DEBIT' THEN -t.amount ELSE 0 END) AS net_ledger_flow FROM accounts a LEFT JOIN transactions t ON t.account_id=a.account_id GROUP BY a.account_id,a.account_number ORDER BY a.account_number;
