@@ -55,3 +55,7 @@ WITH ranked AS (SELECT t.*,ROW_NUMBER() OVER(PARTITION BY account_id ORDER BY tr
 
 -- Three-row moving average, ordered deterministically per account
 SELECT account_id,reference_code,transaction_time,amount,ROUND(AVG(amount) OVER(PARTITION BY account_id ORDER BY transaction_time,transaction_id ROWS BETWEEN 2 PRECEDING AND CURRENT ROW),2) AS moving_avg_3_rows FROM transactions WHERE status='SUCCESS' ORDER BY account_id,transaction_time,transaction_id;
+
+
+-- Rank successful items inside each channel for investigation triage
+SELECT channel,reference_code,amount,transaction_time,RANK() OVER(PARTITION BY channel ORDER BY amount DESC) AS channel_amount_rank FROM transactions WHERE status='SUCCESS' ORDER BY channel,channel_amount_rank,reference_code;
