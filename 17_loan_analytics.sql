@@ -44,3 +44,6 @@ ORDER BY days_past_due DESC, lp.amount_due DESC;
 
 
 SELECT l.loan_type,COUNT(DISTINCT l.loan_id) AS loan_count,COUNT(lp.payment_id) AS installment_count,SUM(lp.status='LATE') AS late_installments,SUM(lp.status='MISSED') AS missed_installments,SUM(lp.amount_due-lp.amount_paid) AS scheduled_outstanding FROM loans l LEFT JOIN loan_payments lp ON lp.loan_id=l.loan_id GROUP BY l.loan_type ORDER BY missed_installments DESC,scheduled_outstanding DESC;
+
+
+SELECT c.customer_number,CONCAT(c.first_name,' ',c.last_name) AS customer_name,COUNT(l.loan_id) AS loan_count,SUM(l.principal) AS principal_exposure,ROUND(AVG(l.interest_rate),2) AS average_annual_rate_pct FROM customers c JOIN loans l ON l.customer_id=c.customer_id WHERE l.status='ACTIVE' GROUP BY c.customer_id,c.customer_number,c.first_name,c.last_name ORDER BY principal_exposure DESC;
