@@ -60,3 +60,7 @@ DELIMITER ;
 
 -- Boundary values demonstrate the declared score bands.
 SELECT calculate_risk_band(0.00) AS zero_score,calculate_risk_band(49.99) AS low_upper_edge,calculate_risk_band(50.00) AS medium_lower_edge,calculate_risk_band(79.99) AS medium_upper_edge,calculate_risk_band(80.00) AS high_lower_edge,calculate_risk_band(100.00) AS maximum_score;
+
+
+-- Invalid inputs are explicitly mapped to INVALID by the example utility.
+SELECT calculate_risk_band(-1.00) AS negative_score,calculate_risk_band(100.01) AS score_above_max,calculate_risk_band(NULL) AS missing_score;
