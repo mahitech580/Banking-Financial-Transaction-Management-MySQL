@@ -58,3 +58,14 @@ SELECT COALESCE(status, 'UNSPECIFIED') AS transaction_status,
 FROM transactions
 GROUP BY COALESCE(status, 'UNSPECIFIED')
 ORDER BY row_count DESC;
+
+
+-- Conditional outcome aggregation
+SELECT channel,
+       SUM(status = 'SUCCESS') AS successful_count,
+       SUM(status = 'FAILED') AS failed_count,
+       SUM(status = 'PENDING') AS pending_count,
+       SUM(status = 'REVERSED') AS reversed_count
+FROM transactions
+GROUP BY channel
+ORDER BY channel;
