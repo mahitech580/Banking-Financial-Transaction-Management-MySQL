@@ -64,3 +64,7 @@ SELECT a.account_number,a.account_type,a.current_balance FROM accounts a WHERE a
 
 -- Missing repayment rows can indicate incomplete demo or migrated data
 SELECT l.loan_id,l.loan_type,l.principal,l.status FROM loans l WHERE NOT EXISTS (SELECT 1 FROM loan_payments lp WHERE lp.loan_id=l.loan_id) ORDER BY l.loan_id;
+
+
+-- Successful transactions above their channel's successful average
+SELECT t.reference_code,t.channel,t.amount,t.transaction_time FROM transactions t WHERE t.status='SUCCESS' AND t.amount>(SELECT AVG(t2.amount) FROM transactions t2 WHERE t2.channel=t.channel AND t2.status='SUCCESS') ORDER BY t.channel,t.amount DESC;
