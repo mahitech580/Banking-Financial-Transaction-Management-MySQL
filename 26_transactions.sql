@@ -36,3 +36,9 @@ SELECT account_id,account_number,current_balance,status FROM accounts WHERE acco
 
 -- Compare recorded transfer metadata to the originating debit ledger row.
 SELECT tr.transfer_id,tr.transfer_amount,tr.status AS transfer_status,tx.reference_code,tx.amount AS ledger_amount,tx.transaction_type,tx.status AS ledger_status FROM transfers tr JOIN transactions tx ON tx.transaction_id=tr.transaction_id ORDER BY tr.transfer_id DESC LIMIT 25;
+
+
+-- For a disposable test database, capture the two account balances before a deliberately
+-- invalid transfer, invoke the procedure with an insufficient amount, and verify that
+-- balances, transaction count and transfer count remain unchanged after the expected error.
+-- This is a manual QA scenario; it intentionally does not execute a failing CALL here.
