@@ -71,3 +71,10 @@ SELECT audit_id,entity_name,entity_id,action_type,action_at,details FROM audit_l
 
 -- This query should return no rows when payment validation rules hold.
 SELECT payment_id,loan_id,amount_due,amount_paid,status FROM loan_payments WHERE amount_due<=0 OR amount_paid<0 OR amount_paid>amount_due OR (status='PAID' AND amount_paid<amount_due);
+
+
+-- Manual negative test cases for a disposable test database only:
+-- INSERT INTO loan_payments (loan_id,due_date,amount_due,amount_paid,status)
+-- VALUES (1,CURRENT_DATE,100.00,150.00,'DUE');
+-- The BEFORE INSERT trigger should raise SQLSTATE 45000.
+-- Do not run negative tests against production data.
