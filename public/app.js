@@ -67,16 +67,32 @@
     $("#health-database").textContent = connected ? (databaseName || "MySQL schema available") : "Database unavailable";
   }
 
+  function updateTransferAvailability(enabled) {
+    const button = $("#transfer-submit");
+    const message = $("#transfer-message");
+    if (button) button.disabled = !enabled;
+    if (!enabled && message && message.hidden) {
+      message.hidden = false;
+      message.className = "form-message error";
+      message.textContent = "Transfers are disabled until MySQL is connected and ENABLE_DEMO_TRANSFERS=true is set for a synthetic-data demo.";
+    } else if (enabled && message && message.textContent.startsWith("Transfers are disabled until")) {
+      message.hidden = true;
+      message.textContent = "";
+    }
+  }
+
   async function checkHealth() {
     try {
       const health = await api("/api/health");
       const connected = Boolean(health.ok && health.database === "connected");
+      updateTransferAvailability(connected && health.transfersEnabled === true);
       setDbStatus(connected, connected ? "MySQL connected" : "Database offline", health.databaseName);
       if (!connected) notice(health.message || "Database connection is unavailable. Set the MYSQL_* environment variables and confirm that the schema has been created.");
       else notice("");
       return health;
     } catch (error) {
       setDbStatus(false, "Database offline");
+      updateTransferAvailability(false);
       notice(error.message + " Check the server configuration.");
       return { ok: false };
     }
