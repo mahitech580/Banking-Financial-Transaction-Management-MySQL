@@ -954,3 +954,22 @@ GitHub: https://github.com/mahitech580
 This project is licensed under the **MIT License**.
 
 See the `LICENSE` file for details.
+
+
+---
+
+# Interactive Web Dashboard
+
+The repository now also contains a web dashboard and API for exploring the MySQL sample database.
+
+- **Frontend:** `public/index.html`, `public/styles.css`, `public/app.js`
+- **Backend:** `server.js` (Express + `mysql2`)
+- **Deployment:** `render.yaml`
+- **Local and Render setup:** [DEPLOYMENT.md](DEPLOYMENT.md)
+- **Optional synthetic data:** [29_demo_operations_data.sql](29_demo_operations_data.sql)
+
+The dashboard includes overview metrics, customer and account search, transaction filtering, financial analytics, loan summaries, fraud-event review, CSV exports, and an atomic transfer demonstration.
+
+The UI is connected to the Express API; the API reads and writes to the MySQL schema from this repository. Configure a reachable MySQL 8.0+ database before expecting live records. The `/healthz` endpoint checks the web process, while `/api/health` verifies MySQL connectivity.
+
+**Safety:** transfers are disabled by default. Only set `ENABLE_DEMO_TRANSFERS=true` when testing against a private database with synthetic data. This is a learning/portfolio application, not production banking software.
