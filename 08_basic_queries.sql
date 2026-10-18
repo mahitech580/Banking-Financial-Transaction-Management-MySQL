@@ -69,3 +69,12 @@ SELECT channel,
 FROM transactions
 GROUP BY channel
 ORDER BY channel;
+
+
+-- Half-open timestamp filtering
+-- Half-open ranges include the start and exclude the next day; useful for indexed DATETIME columns.
+SELECT reference_code, amount, transaction_time, status
+FROM transactions
+WHERE transaction_time >= '2026-10-01 00:00:00'
+  AND transaction_time <  '2026-11-01 00:00:00'
+ORDER BY transaction_time DESC;
