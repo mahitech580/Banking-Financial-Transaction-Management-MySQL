@@ -36,3 +36,12 @@ VALUES
 INSERT INTO transfers
   (transaction_id, from_account_id, to_account_id, transfer_amount, initiated_at, status)
 VALUES (25, 1, 2, 1000.00, '2026-10-18 10:00:00', 'COMPLETED');
+
+
+-- Ledger volume check
+SELECT status, COUNT(*) AS row_count,
+       SUM(amount) AS attempted_amount,
+       SUM(CASE WHEN status = 'SUCCESS' THEN amount ELSE 0 END) AS successful_amount
+FROM transactions
+GROUP BY status
+ORDER BY status;
