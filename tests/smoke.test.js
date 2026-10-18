@@ -99,3 +99,15 @@ test("static dashboard assets are served by the API service", async () => {
   assert.equal(css.status, 200);
   assert.equal(js.status, 200);
 });
+
+
+test("API catalogue is cache-protected and keeps transfer mode explicit", async () => {
+  const response = await fetch(baseUrl + "/api");
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("cache-control"), "no-store");
+  const payload = await response.json();
+  assert.equal(payload.name, "Ledgerly Banking API");
+  const transfer = payload.endpoints.find((endpoint) => endpoint.path === "/api/transfers");
+  assert.ok(transfer, "transfer endpoint should be documented in the API catalogue");
+  assert.match(transfer.description, /disabled/i);
+});
