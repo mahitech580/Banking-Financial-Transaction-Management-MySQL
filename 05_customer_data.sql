@@ -34,3 +34,12 @@ SELECT CASE
 FROM customers
 GROUP BY tenure_band
 ORDER BY customer_count DESC;
+
+
+-- Customer branch coverage
+SELECT b.branch_name, b.city, COUNT(c.customer_id) AS customer_count,
+       SUM(c.risk_level = 'HIGH') AS high_risk_customers
+FROM branches AS b
+LEFT JOIN customers AS c ON c.branch_id = b.branch_id
+GROUP BY b.branch_id, b.branch_name, b.city
+ORDER BY customer_count DESC, b.branch_name;
