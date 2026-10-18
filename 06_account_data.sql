@@ -24,3 +24,16 @@ FROM accounts AS a
 JOIN branches AS b ON b.branch_id = a.branch_id
 GROUP BY b.branch_id, b.branch_name, a.account_type
 ORDER BY portfolio_balance DESC;
+
+
+-- Account balance bands
+SELECT CASE
+         WHEN current_balance >= 100000 THEN '100k+'
+         WHEN current_balance >= 50000 THEN '50k-99,999'
+         WHEN current_balance >= 10000 THEN '10k-49,999'
+         ELSE 'Under 10k'
+       END AS balance_band,
+       COUNT(*) AS account_count, SUM(current_balance) AS total_balance
+FROM accounts
+GROUP BY balance_band
+ORDER BY MIN(current_balance) DESC;
