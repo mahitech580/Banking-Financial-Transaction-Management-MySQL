@@ -49,3 +49,7 @@ GROUP BY c.customer_id, c.customer_number, c.first_name, c.last_name
 HAVING MAX(t.transaction_time) IS NULL
     OR MAX(t.transaction_time) < CURRENT_DATE - INTERVAL 90 DAY
 ORDER BY last_successful_transaction;
+
+
+-- Average ticket is computed only across successful transactions
+WITH customer_tx AS (SELECT a.customer_id,COUNT(*) AS successful_count,AVG(t.amount) AS avg_ticket,SUM(t.amount) AS gross_value FROM accounts a JOIN transactions t ON t.account_id=a.account_id WHERE t.status='SUCCESS' GROUP BY a.customer_id) SELECT c.customer_number,CONCAT(c.first_name,' ',c.last_name) AS customer_name,ct.successful_count,ROUND(ct.avg_ticket,2) AS avg_ticket,ct.gross_value FROM customer_tx ct JOIN customers c ON c.customer_id=ct.customer_id ORDER BY ct.avg_ticket DESC;
