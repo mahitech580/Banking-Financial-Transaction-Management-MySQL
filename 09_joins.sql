@@ -64,3 +64,7 @@ ORDER BY b.branch_name, total_balance DESC;
 
 -- Branch and account rollup
 SELECT b.branch_code, b.branch_name, a.account_type, COUNT(a.account_id) AS account_count, COALESCE(SUM(a.current_balance),0) AS total_balance FROM branches b LEFT JOIN accounts a ON a.branch_id=b.branch_id GROUP BY b.branch_id,b.branch_code,b.branch_name,a.account_type ORDER BY b.branch_name,total_balance DESC;
+
+
+-- Transfer rows with source, destination and originating ledger transaction
+SELECT tr.transfer_id,tr.initiated_at,tr.transfer_amount,tr.status,src.account_number AS source_account,dst.account_number AS destination_account,tx.reference_code AS debit_reference,tx.status AS debit_status FROM transfers tr JOIN accounts src ON src.account_id=tr.from_account_id JOIN accounts dst ON dst.account_id=tr.to_account_id JOIN transactions tx ON tx.transaction_id=tr.transaction_id ORDER BY tr.initiated_at DESC;
