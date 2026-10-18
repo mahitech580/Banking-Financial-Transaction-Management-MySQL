@@ -53,3 +53,7 @@ ORDER BY last_successful_transaction;
 
 -- Average ticket is computed only across successful transactions
 WITH customer_tx AS (SELECT a.customer_id,COUNT(*) AS successful_count,AVG(t.amount) AS avg_ticket,SUM(t.amount) AS gross_value FROM accounts a JOIN transactions t ON t.account_id=a.account_id WHERE t.status='SUCCESS' GROUP BY a.customer_id) SELECT c.customer_number,CONCAT(c.first_name,' ',c.last_name) AS customer_name,ct.successful_count,ROUND(ct.avg_ticket,2) AS avg_ticket,ct.gross_value FROM customer_tx ct JOIN customers c ON c.customer_id=ct.customer_id ORDER BY ct.avg_ticket DESC;
+
+
+-- Independent CTE aggregates prevent multiplying balances by loan rows
+WITH deposits AS (SELECT customer_id,SUM(current_balance) AS deposit_balance FROM accounts GROUP BY customer_id), borrowing AS (SELECT customer_id,COUNT(*) AS loan_count,SUM(principal) AS principal_exposure FROM loans WHERE status='ACTIVE' GROUP BY customer_id) SELECT c.customer_number,COALESCE(d.deposit_balance,0) AS deposit_balance,COALESCE(b.loan_count,0) AS active_loans,COALESCE(b.principal_exposure,0) AS principal_exposure FROM customers c LEFT JOIN deposits d ON d.customer_id=c.customer_id LEFT JOIN borrowing b ON b.customer_id=c.customer_id ORDER BY principal_exposure DESC;
