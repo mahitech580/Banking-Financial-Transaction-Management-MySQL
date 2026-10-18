@@ -371,6 +371,30 @@ app.post("/api/transfers", requireDatabase, asyncRoute(async (req, res) => {
   }
 }));
 
+app.get("/api", (_req, res) => {
+  res.json({
+    name: "Ledgerly Banking API",
+    version: "1.0.0",
+    documentation: "/docs/API.md",
+    health: "/api/health",
+    endpoints: [
+      { method: "GET", path: "/api/overview", description: "Dashboard summary and recent transactions" },
+      { method: "GET", path: "/api/customers", description: "Search customers with the q query parameter" },
+      { method: "GET", path: "/api/accounts", description: "Search accounts with the q query parameter" },
+      { method: "GET", path: "/api/transactions", description: "Search transactions with q and status query parameters" },
+      { method: "GET", path: "/api/analytics", description: "Financial activity aggregates" },
+      { method: "GET", path: "/api/branches", description: "Branch summaries" },
+      { method: "GET", path: "/api/cards", description: "Card registry" },
+      { method: "GET", path: "/api/loans", description: "Loan summaries" },
+      { method: "GET", path: "/api/repayments", description: "Scheduled and recorded loan payments" },
+      { method: "GET", path: "/api/settlements", description: "Settlement records" },
+      { method: "GET", path: "/api/disputes", description: "Transaction disputes" },
+      { method: "GET", path: "/api/fraud-events", description: "Recorded fraud events" },
+      { method: "POST", path: "/api/transfers", description: "Demo transfer; disabled unless ENABLE_DEMO_TRANSFERS=true" }
+    ]
+  });
+});
+
 app.use("/api", (_req, res) => res.status(404).json({ error: "API endpoint not found." }));
 
 app.use((error, _req, res, _next) => {
