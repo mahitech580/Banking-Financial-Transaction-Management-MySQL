@@ -151,3 +151,7 @@ DELIMITER ;
 -- CALL get_customer_transactions(1, 25, 0);
 -- CALL get_customer_financial_summary(1);
 -- Example transfer call is kept in 26_transactions.sql.
+
+
+-- Example pagination: inspect the first 20 ledger entries for customer ID 1.
+CALL get_customer_transactions(1, 20, 0);
