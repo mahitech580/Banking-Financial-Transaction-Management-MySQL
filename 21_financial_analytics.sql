@@ -63,3 +63,6 @@ ORDER BY reporting_month, s.status;
 
 
 WITH monthly AS (SELECT DATE_FORMAT(transaction_time,'%Y-%m') AS month_key,SUM(CASE WHEN status='SUCCESS' THEN amount ELSE 0 END) AS successful_value FROM transactions GROUP BY DATE_FORMAT(transaction_time,'%Y-%m')) SELECT month_key,successful_value,SUM(successful_value) OVER(ORDER BY month_key ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumulative_successful_value FROM monthly ORDER BY month_key;
+
+
+SELECT transaction_type,COUNT(*) AS attempted_count,SUM(CASE WHEN status='SUCCESS' THEN amount ELSE 0 END) AS successful_value,ROUND(100.0*SUM(CASE WHEN status='SUCCESS' THEN amount ELSE 0 END)/NULLIF((SELECT SUM(amount) FROM transactions WHERE status='SUCCESS'),0),2) AS share_of_successful_value_pct FROM transactions GROUP BY transaction_type ORDER BY successful_value DESC;
