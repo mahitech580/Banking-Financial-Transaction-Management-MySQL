@@ -57,3 +57,6 @@ SELECT CASE WHEN risk_score>=90 THEN 'CRITICAL' WHEN risk_score>=75 THEN 'HIGH' 
 
 
 SELECT action_taken,COUNT(*) AS event_count,SUM(t.status='FAILED') AS failed_linked_transactions,SUM(t.status='REVERSED') AS reversed_linked_transactions,ROUND(AVG(f.risk_score),2) AS average_score FROM fraud_events f JOIN transactions t ON t.transaction_id=f.transaction_id GROUP BY action_taken ORDER BY average_score DESC;
+
+
+SELECT f.fraud_event_id,f.detected_at,f.fraud_type,f.risk_score,f.action_taken,t.reference_code,t.amount,CONCAT(c.first_name,' ',c.last_name) AS customer_name,a.account_number FROM fraud_events f JOIN transactions t ON t.transaction_id=f.transaction_id JOIN accounts a ON a.account_id=t.account_id JOIN customers c ON c.customer_id=a.customer_id WHERE f.action_taken IN ('REVIEW','BLOCK') ORDER BY f.risk_score DESC,f.detected_at DESC;
