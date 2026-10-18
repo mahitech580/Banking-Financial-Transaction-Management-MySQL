@@ -61,3 +61,7 @@ WITH customer_value AS (SELECT a.customer_id,SUM(CASE WHEN t.status='SUCCESS' TH
 
 -- Aggregate first, calculate month-over-month change second
 WITH monthly AS (SELECT DATE_FORMAT(transaction_time,'%Y-%m') AS month_key,SUM(CASE WHEN status='SUCCESS' AND transaction_type='CREDIT' THEN amount ELSE 0 END) AS credits,SUM(CASE WHEN status='SUCCESS' AND transaction_type='DEBIT' THEN amount ELSE 0 END) AS debits FROM transactions GROUP BY DATE_FORMAT(transaction_time,'%Y-%m')) SELECT month_key,credits,debits,credits-debits AS net_flow,LAG(credits-debits) OVER(ORDER BY month_key) AS previous_net_flow FROM monthly ORDER BY month_key;
+
+
+-- Count each customer's recorded flags without multiplying loan and transaction rows
+WITH tx AS (SELECT a.customer_id,SUM(t.status='FAILED') AS failed_count FROM accounts a JOIN transactions t ON t.account_id=a.account_id GROUP BY a.customer_id), fraud AS (SELECT a.customer_id,COUNT(*) AS event_count,MAX(f.risk_score) AS max_score FROM accounts a JOIN transactions t ON t.account_id=a.account_id JOIN fraud_events f ON f.transaction_id=t.transaction_id GROUP BY a.customer_id) SELECT c.customer_number,c.risk_level,COALESCE(tx.failed_count,0) AS failed_count,COALESCE(fraud.event_count,0) AS fraud_events,COALESCE(fraud.max_score,0) AS max_score FROM customers c LEFT JOIN tx ON tx.customer_id=c.customer_id LEFT JOIN fraud ON fraud.customer_id=c.customer_id ORDER BY max_score DESC,failed_count DESC;
