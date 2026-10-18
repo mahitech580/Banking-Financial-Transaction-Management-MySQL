@@ -28,3 +28,12 @@ SELECT risk_level, COUNT(*) AS merchant_count,
 FROM merchants
 GROUP BY risk_level
 ORDER BY FIELD(risk_level, 'HIGH', 'MEDIUM', 'LOW');
+
+
+-- Unused merchant check
+SELECT m.merchant_id, m.merchant_name, m.merchant_category
+FROM merchants AS m
+LEFT JOIN transactions AS t ON t.merchant_id = m.merchant_id
+LEFT JOIN card_transactions AS ct ON ct.merchant_id = m.merchant_id
+WHERE t.transaction_id IS NULL AND ct.card_transaction_id IS NULL
+ORDER BY m.merchant_name;
