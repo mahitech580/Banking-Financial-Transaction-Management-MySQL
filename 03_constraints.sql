@@ -14,3 +14,10 @@ ALTER TABLE accounts
 SELECT account_id, account_number, current_balance
 FROM accounts
 WHERE current_balance < 0;
+
+
+-- Repayment consistency audit
+-- A clean dataset should return zero inconsistent repayment records.
+SELECT payment_id, loan_id, amount_due, amount_paid, status
+FROM loan_payments
+WHERE amount_due <= 0 OR amount_paid < 0 OR amount_paid > amount_due;
