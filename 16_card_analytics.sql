@@ -37,3 +37,6 @@ JOIN cards AS c ON c.card_id = ct.card_id
 JOIN merchants AS m ON m.merchant_id = ct.merchant_id
 WHERE ct.amount >= 25000 OR HOUR(ct.transaction_time) BETWEEN 0 AND 4
 ORDER BY ct.amount DESC;
+
+
+SELECT c.card_type,ct.status,COUNT(*) AS attempt_count,SUM(ct.amount) AS attempted_value,ROUND(AVG(ct.amount),2) AS average_amount FROM card_transactions ct JOIN cards c ON c.card_id=ct.card_id GROUP BY c.card_type,ct.status ORDER BY c.card_type,attempt_count DESC;
