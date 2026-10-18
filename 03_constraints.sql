@@ -21,3 +21,10 @@ WHERE current_balance < 0;
 SELECT payment_id, loan_id, amount_due, amount_paid, status
 FROM loan_payments
 WHERE amount_due <= 0 OR amount_paid < 0 OR amount_paid > amount_due;
+
+
+-- Fraud score validation
+-- The configured score range is 0 through 100, inclusive.
+SELECT fraud_event_id, risk_score
+FROM fraud_events
+WHERE risk_score < 0 OR risk_score > 100;
