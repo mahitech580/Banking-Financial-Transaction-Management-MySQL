@@ -14,3 +14,11 @@ VALUES
   ('C10008','Sneha','Nair','sneha.nair@example.com','9000000008','1999-09-08','2024-05-05','LOW',3),
   ('C10009','Aditya','Singh','aditya.singh@example.com','9000000009','1994-04-21','2022-08-18','MEDIUM',1),
   ('C10010','Meera','Das','meera.das@example.com','9000000010','1997-10-11','2023-01-07','LOW',2);
+
+
+-- Customer risk segmentation
+SELECT risk_level, COUNT(*) AS customer_count,
+       ROUND(100.0 * COUNT(*) / NULLIF((SELECT COUNT(*) FROM customers), 0), 2) AS portfolio_pct
+FROM customers
+GROUP BY risk_level
+ORDER BY FIELD(risk_level, 'HIGH', 'MEDIUM', 'LOW');
