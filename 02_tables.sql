@@ -203,3 +203,11 @@ FROM information_schema.columns
 WHERE table_schema = DATABASE()
   AND table_name IN ('accounts', 'transactions', 'transfers')
 ORDER BY table_name, ordinal_position;
+
+
+-- Foreign key map
+-- List declared foreign keys to make the relationship model easy to inspect.
+SELECT table_name, column_name, constraint_name, referenced_table_name, referenced_column_name
+FROM information_schema.key_column_usage
+WHERE table_schema = DATABASE() AND referenced_table_name IS NOT NULL
+ORDER BY table_name, constraint_name;
