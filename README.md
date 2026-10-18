@@ -6,7 +6,7 @@ The project focuses entirely on the **database layer**. It covers the lifecycle 
 
 The objective is to demonstrate how I can use **MySQL to design a structured relational database, maintain data integrity, perform complex analysis, implement database-level business logic, and optimize SQL queries.**
 
----
+
 
 ## About the Project
 
