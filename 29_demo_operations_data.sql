@@ -117,3 +117,9 @@ UNION ALL SELECT 'repayments',COUNT(*) FROM loan_payments
 UNION ALL SELECT 'fraud events',COUNT(*) FROM fraud_events
 UNION ALL SELECT 'disputes',COUNT(*) FROM disputes
 UNION ALL SELECT 'settlements',COUNT(*) FROM settlements;
+
+
+-- Inspect the mix of operations seeded for the dashboard.
+SELECT 'card_transactions' AS entity,status,COUNT(*) AS row_count FROM card_transactions GROUP BY status
+UNION ALL SELECT 'settlements',status,COUNT(*) FROM settlements GROUP BY status
+ORDER BY entity,status;
