@@ -123,3 +123,9 @@ UNION ALL SELECT 'settlements',COUNT(*) FROM settlements;
 SELECT 'card_transactions' AS entity,status,COUNT(*) AS row_count FROM card_transactions GROUP BY status
 UNION ALL SELECT 'settlements',status,COUNT(*) FROM settlements GROUP BY status
 ORDER BY entity,status;
+
+
+-- Each query should return zero rows if all optional seed references are valid.
+SELECT f.fraud_event_id FROM fraud_events f LEFT JOIN transactions t ON t.transaction_id=f.transaction_id WHERE t.transaction_id IS NULL;
+SELECT lp.payment_id FROM loan_payments lp LEFT JOIN loans l ON l.loan_id=lp.loan_id WHERE l.loan_id IS NULL;
+SELECT s.settlement_id FROM settlements s LEFT JOIN transactions t ON t.transaction_id=s.transaction_id WHERE t.transaction_id IS NULL;
