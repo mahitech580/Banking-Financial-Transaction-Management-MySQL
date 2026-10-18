@@ -56,3 +56,7 @@ WHERE l.principal > (
   WHERE l2.loan_type = l.loan_type
 )
 ORDER BY l.principal DESC;
+
+
+-- Accounts whose balance exceeds the average for their own product type
+SELECT a.account_number,a.account_type,a.current_balance FROM accounts a WHERE a.current_balance>(SELECT AVG(a2.current_balance) FROM accounts a2 WHERE a2.account_type=a.account_type) ORDER BY a.account_type,a.current_balance DESC;
