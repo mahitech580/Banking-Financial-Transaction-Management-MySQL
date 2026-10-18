@@ -12,7 +12,7 @@ This repository is an educational portfolio project. It is not a production bank
 - Keep `ENABLE_DEMO_TRANSFERS=false` on publicly accessible instances.
 - Enable transfers only against an isolated disposable database containing synthetic data.
 - Do not use actual customer, cardholder, account or loan information.
-- Back up any database before running the destructive reset script `01_database_schema.sql`; it drops and recreates the demo database.
+- `01_database_schema.sql` creates the schema if absent and does not delete existing records. If performing a manual reset, back up and drop only a disposable demo database.
 - Review configuration and access rules before making a deployed service public.
 
 ## Reporting a vulnerability
