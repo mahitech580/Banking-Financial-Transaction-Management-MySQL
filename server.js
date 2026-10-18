@@ -24,6 +24,11 @@ app.use(helmet({
   }
 }));
 app.use(express.json({ limit: "20kb" }));
+// Banking and account data should not be cached by shared browsers or proxies.
+app.use("/api", (_req, res, next) => {
+  res.set("Cache-Control", "no-store");
+  next();
+});
 app.use(express.static(path.join(__dirname, "public"), { extensions: ["html"] }));
 
 function makePool() {
