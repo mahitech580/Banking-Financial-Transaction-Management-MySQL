@@ -51,3 +51,6 @@ WHERE ct.status IN ('FAILED','REVERSED')
    OR ct.amount >= 25000
    OR HOUR(ct.transaction_time) BETWEEN 0 AND 4
 ORDER BY ct.amount DESC;
+
+
+SELECT CASE WHEN risk_score>=90 THEN 'CRITICAL' WHEN risk_score>=75 THEN 'HIGH' WHEN risk_score>=50 THEN 'MEDIUM' ELSE 'LOW' END AS score_band,COUNT(*) AS event_count,AVG(risk_score) AS average_score FROM fraud_events GROUP BY score_band ORDER BY MIN(risk_score) DESC;
