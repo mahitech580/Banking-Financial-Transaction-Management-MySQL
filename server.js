@@ -230,6 +230,70 @@ app.get("/api/fraud-events", requireDatabase, asyncRoute(async (_req, res) => {
   res.json({ data: rows });
 }));
 
+
+app.get("/api/branches", requireDatabase, asyncRoute(async (_req, res) => {
+  const [rows] = await pool.query(`
+    SELECT b.branch_id, b.branch_code, b.branch_name, b.city, b.state,
+      COALESCE(c.customer_count, 0) AS customer_count,
+      COALESCE(a.account_count, 0) AS account_count,
+      COALESCE(a.total_balance, 0) AS total_balance
+    FROM branches b
+    LEFT JOIN (SELECT branch_id, COUNT(*) AS customer_count FROM customers GROUP BY branch_id) c
+      ON c.branch_id = b.branch_id
+    LEFT JOIN (SELECT branch_id, COUNT(*) AS account_count, SUM(current_balance) AS total_balance
+      FROM accounts GROUP BY branch_id) a ON a.branch_id = b.branch_id
+    ORDER BY b.city, b.branch_name
+  `);
+  res.json({ data: rows });
+}));
+
+app.get("/api/cards", requireDatabase, asyncRoute(async (_req, res) => {
+  const [rows] = await pool.query(`
+    SELECT cd.card_id, cd.card_number, cd.card_type, cd.issued_at, cd.credit_limit, cd.status,
+      CONCAT(c.first_name, ' ', c.last_name) AS customer_name, c.customer_number, a.account_number
+    FROM cards cd JOIN customers c ON c.customer_id = cd.customer_id
+    JOIN accounts a ON a.account_id = cd.account_id
+    ORDER BY cd.card_id DESC LIMIT 250
+  `);
+  res.json({ data: rows });
+}));
+
+app.get("/api/repayments", requireDatabase, asyncRoute(async (_req, res) => {
+  const [rows] = await pool.query(`
+    SELECT lp.payment_id, lp.due_date, lp.paid_date, lp.amount_due, lp.amount_paid, lp.status,
+      l.loan_id, l.loan_type, CONCAT(c.first_name, ' ', c.last_name) AS customer_name
+    FROM loan_payments lp JOIN loans l ON l.loan_id = lp.loan_id
+    JOIN customers c ON c.customer_id = l.customer_id
+    ORDER BY lp.due_date DESC, lp.payment_id DESC LIMIT 300
+  `);
+  res.json({ data: rows });
+}));
+
+app.get("/api/disputes", requireDatabase, asyncRoute(async (_req, res) => {
+  const [rows] = await pool.query(`
+    SELECT d.dispute_id, d.opened_at, d.reason, d.disputed_amount, d.status,
+      t.reference_code, a.account_number, CONCAT(c.first_name, ' ', c.last_name) AS customer_name
+    FROM disputes d JOIN transactions t ON t.transaction_id = d.transaction_id
+    JOIN accounts a ON a.account_id = t.account_id
+    JOIN customers c ON c.customer_id = a.customer_id
+    ORDER BY d.opened_at DESC LIMIT 250
+  `);
+  res.json({ data: rows });
+}));
+
+app.get("/api/settlements", requireDatabase, asyncRoute(async (_req, res) => {
+  const [rows] = await pool.query(`
+    SELECT s.settlement_id, s.settled_at, s.settlement_amount, s.status,
+      t.reference_code, t.transaction_time, a.account_number,
+      CONCAT(c.first_name, ' ', c.last_name) AS customer_name
+    FROM settlements s JOIN transactions t ON t.transaction_id = s.transaction_id
+    JOIN accounts a ON a.account_id = t.account_id
+    JOIN customers c ON c.customer_id = a.customer_id
+    ORDER BY s.settlement_id DESC LIMIT 250
+  `);
+  res.json({ data: rows });
+}));
+
 app.post("/api/transfers", requireDatabase, asyncRoute(async (req, res) => {
   if (!transfersEnabled) return res.status(403).json({ error: "Transfers are disabled on this instance. Set ENABLE_DEMO_TRANSFERS=true only for a test database containing synthetic data." });
   const fromId = Number(req.body?.fromAccountId);
