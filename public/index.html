@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="Banking operations and financial transaction analytics powered by MySQL.">
+  <title>Ledgerly — Banking Operations</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" data-page-link="overview" aria-label="Ledgerly home">
+        <span class="brand-mark" aria-hidden="true">L</span>
+        <span><strong>ledgerly</strong><small>FINANCE OPERATIONS</small></span>
+      </a>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="nav-list" aria-label="Main navigation">
+        <button class="nav-item active" data-page="overview"><span class="nav-icon">◫</span>Overview</button>
+        <button class="nav-item" data-page="accounts"><span class="nav-icon">▤</span>Accounts</button>
+        <button class="nav-item" data-page="customers"><span class="nav-icon">♙</span>Customers</button>
+        <button class="nav-item" data-page="transactions"><span class="nav-icon">⇄</span>Transactions</button>
+        <button class="nav-item" data-page="analytics"><span class="nav-icon">▥</span>Analytics</button>
+        <button class="nav-item" data-page="loans"><span class="nav-icon">▱</span>Loans</button>
+        <button class="nav-item" data-page="fraud"><span class="nav-icon">⌁</span>Fraud & risk</button>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-note">
+        <div class="note-icon">✳</div>
+        <strong>Built for clarity.</strong>
+        <p>One workspace for account activity, transfers and financial insights.</p>
+        <span class="mini-pill">MYSQL CONNECTED UI</span>
+      </div>
+      <div class="sidebar-footer"><span class="avatar">M</span><span><strong>Mahi</strong><small>Administrator demo</small></span><span class="dots">···</span></div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobile-menu" aria-label="Toggle navigation">☰</button>
+        <div class="breadcrumbs"><span>Workspace</span><b>/</b><strong id="breadcrumb-current">Overview</strong></div>
+        <div class="top-actions">
+          <span class="environment-pill"><i></i> DEMO ENVIRONMENT</span>
+          <div class="connection-pill" id="connection-status" role="status"><span class="status-dot"></span><span>Checking database…</span></div>
+          <button class="icon-button" id="refresh-button" title="Refresh current view" aria-label="Refresh current view">↻</button>
+        </div>
+      </header>
+
+      <div class="content">
+        <div class="notice" id="global-notice" hidden role="alert"></div>
+
+        <section class="page active" id="page-overview">
+          <div class="page-heading">
+            <div><p class="eyebrow">YOUR FINANCIAL COMMAND CENTER</p><h1>Good day, Mahi <span class="wave">✳</span></h1><p class="subtitle">Here's what's happening across your banking workspace.</p></div>
+            <button class="button button-primary" data-page="transfer"><span>＋</span> New transfer</button>
+          </div>
+          <div class="metric-grid">
+            <article class="metric-card"><div class="metric-top"><span>Total balance</span><span class="metric-icon mint">₹</span></div><div class="metric-value" id="metric-balance">—</div><div class="metric-foot"><span class="foot-dot mint-dot"></span>Across all accounts</div></article>
+            <article class="metric-card"><div class="metric-top"><span>Total customers</span><span class="metric-icon lavender">♙</span></div><div class="metric-value" id="metric-customers">—</div><div class="metric-foot"><span class="foot-dot purple-dot"></span>Registered customers</div></article>
+            <article class="metric-card"><div class="metric-top"><span>Transactions</span><span class="metric-icon sky">⇄</span></div><div class="metric-value" id="metric-transactions">—</div><div class="metric-foot"><span class="foot-dot blue-dot"></span><span id="metric-success">— successful</span></div></article>
+            <article class="metric-card"><div class="metric-top"><span>Accounts active</span><span class="metric-icon amber">▤</span></div><div class="metric-value" id="metric-active-accounts">—</div><div class="metric-foot"><span class="foot-dot amber-dot"></span><span id="metric-loans">— active loans</span></div></article>
+          </div>
+          <div class="dashboard-grid">
+            <article class="panel recent-panel">
+              <div class="panel-heading"><div><h2>Recent transactions</h2><p>Your latest account movements</p></div><button class="text-button" data-page="transactions">View all <span>↗</span></button></div>
+              <div class="table-wrap"><table><thead><tr><th>TRANSACTION</th><th>ACCOUNT</th><th>DATE & TIME</th><th>AMOUNT</th><th>STATUS</th></tr></thead><tbody id="recent-rows"><tr><td colspan="5" class="table-loading">Loading transactions…</td></tr></tbody></table></div>
+            </article>
+            <article class="panel quick-panel">
+              <div class="panel-heading"><div><h2>Quick actions</h2><p>Common operational tasks</p></div></div>
+              <button class="quick-action" data-page="transfer"><span class="quick-icon mint">⇄</span><span><strong>Transfer funds</strong><small>Move funds between accounts</small></span><b>→</b></button>
+              <button class="quick-action" data-page="accounts"><span class="quick-icon sky">▤</span><span><strong>Explore accounts</strong><small>View balances and account status</small></span><b>→</b></button>
+              <button class="quick-action" data-page="analytics"><span class="quick-icon lavender">▥</span><span><strong>View analytics</strong><small>Understand financial activity</small></span><b>→</b></button>
+              <div class="quick-foot"><span class="shield">✓</span> Transfers use a single database transaction.</div>
+            </article>
+          </div>
+          <div class="bottom-grid">
+            <article class="panel"><div class="panel-heading"><div><h2>Transaction channels</h2><p>Activity distribution by channel</p></div><span class="panel-tag">LIVE DATA</span></div><div id="overview-channels" class="channel-list"><p class="empty-state">Loading channel data…</p></div></article>
+            <article class="panel health-panel"><div class="panel-heading"><div><h2>System health</h2><p>Application and database status</p></div></div><div class="health-row"><span class="health-symbol">⌘</span><div><strong>Application API</strong><small>Express service</small></div><span class="status-text healthy" id="api-health">Running</span></div><div class="health-row"><span class="health-symbol green">▤</span><div><strong>MySQL database</strong><small id="health-database">Checking connection</small></div><span class="status-text" id="mysql-health">Checking</span></div><div class="health-foot">This is a portfolio demo, not a real banking platform.</div></article>
+          </div>
+        </section>
+
+        <section class="page" id="page-accounts">
+          <div class="page-heading"><div><p class="eyebrow">CUSTOMER ASSETS</p><h1>Accounts</h1><p class="subtitle">Browse accounts, available balances and branch details.</p></div><button class="button button-secondary" id="accounts-export">↓ Export CSV</button></div>
+          <div class="list-toolbar"><div class="search-box"><span>⌕</span><input id="accounts-search" type="search" placeholder="Search account, customer…" aria-label="Search accounts"></div><span class="result-count" id="accounts-count">— accounts</span></div>
+          <article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>ACCOUNT</th><th>CUSTOMER</th><th>TYPE</th><th>BRANCH</th><th>BALANCE</th><th>STATUS</th><th>OPENED</th></tr></thead><tbody id="accounts-rows"><tr><td colspan="7" class="table-loading">Loading accounts…</td></tr></tbody></table></div></article>
+        </section>
+
+        <section class="page" id="page-customers">
+          <div class="page-heading"><div><p class="eyebrow">PEOPLE & RELATIONSHIPS</p><h1>Customers</h1><p class="subtitle">Customer directory, risk levels and linked products.</p></div><button class="button button-secondary" id="customers-export">↓ Export CSV</button></div>
+          <div class="list-toolbar"><div class="search-box"><span>⌕</span><input id="customers-search" type="search" placeholder="Search name, email or customer ID…" aria-label="Search customers"></div><span class="result-count" id="customers-count">— customers</span></div>
+          <article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>CUSTOMER</th><th>CUSTOMER ID</th><th>EMAIL</th><th>ACCOUNTS</th><th>LOANS</th><th>RISK</th><th>JOINED</th></tr></thead><tbody id="customers-rows"><tr><td colspan="7" class="table-loading">Loading customers…</td></tr></tbody></table></div></article>
+        </section>
+
+        <section class="page" id="page-transactions">
+          <div class="page-heading"><div><p class="eyebrow">ACTIVITY LEDGER</p><h1>Transactions</h1><p class="subtitle">Search transaction references and review processing statuses.</p></div><button class="button button-secondary" id="transactions-export">↓ Export CSV</button></div>
+          <div class="list-toolbar"><div class="search-box"><span>⌕</span><input id="transactions-search" type="search" placeholder="Search reference, account, customer…" aria-label="Search transactions"></div><select id="transactions-status" class="filter-select" aria-label="Filter transaction status"><option value="">All statuses</option><option>SUCCESS</option><option>PENDING</option><option>FAILED</option><option>REVERSED</option></select><span class="result-count" id="transactions-count">— transactions</span></div>
+          <article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>REFERENCE</th><th>CUSTOMER / ACCOUNT</th><th>TYPE</th><th>CHANNEL</th><th>DATE & TIME</th><th>AMOUNT</th><th>STATUS</th></tr></thead><tbody id="transactions-rows"><tr><td colspan="7" class="table-loading">Loading transactions…</td></tr></tbody></table></div></article>
+        </section>
+
+        <section class="page" id="page-analytics">
+          <div class="page-heading"><div><p class="eyebrow">REPORTING & INSIGHTS</p><h1>Analytics</h1><p class="subtitle">A clear view of transaction patterns across your database.</p></div><span class="panel-tag">MYSQL QUERIES</span></div>
+          <div class="analytics-grid"><article class="panel chart-panel"><div class="panel-heading"><div><h2>Daily transaction value</h2><p>Last 14 days · successful amount</p></div></div><div id="daily-chart" class="bar-chart"></div></article><article class="panel"><div class="panel-heading"><div><h2>Channel breakdown</h2><p>Volume by payment channel</p></div></div><div id="analytics-channels" class="channel-list"></div></article><article class="panel"><div class="panel-heading"><div><h2>Transaction types</h2><p>Processed transaction mix</p></div></div><div id="analytics-types" class="channel-list"></div></article><article class="panel"><div class="panel-heading"><div><h2>Top customer activity</h2><p>Ranked by successful gross value</p></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>CUSTOMER</th><th>COUNT</th><th>GROSS VALUE</th></tr></thead><tbody id="top-customers"><tr><td colspan="4" class="table-loading">Loading analytics…</td></tr></tbody></table></div></article></div>
+        </section>
+
+        <section class="page" id="page-loans">
+          <div class="page-heading"><div><p class="eyebrow">CREDIT PORTFOLIO</p><h1>Loans</h1><p class="subtitle">Loan portfolio and recorded repayment summaries.</p></div><span class="panel-tag">READ ONLY</span></div>
+          <article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>LOAN</th><th>CUSTOMER</th><th>TYPE</th><th>PRINCIPAL</th><th>RATE</th><th>PAID / DUE</th><th>STATUS</th></tr></thead><tbody id="loans-rows"><tr><td colspan="7" class="table-loading">Loading loans…</td></tr></tbody></table></div></article>
+        </section>
+
+        <section class="page" id="page-fraud">
+          <div class="page-heading"><div><p class="eyebrow">MONITORING & INVESTIGATION</p><h1>Fraud & risk</h1><p class="subtitle">Review fraud events recorded in the MySQL database.</p></div><span class="panel-tag">RULE-BASED DATA</span></div>
+          <div class="notice notice-info">This view displays existing records only. The project does not run a live fraud-detection model.</div>
+          <article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>DETECTED</th><th>REFERENCE</th><th>CUSTOMER</th><th>TYPE</th><th>AMOUNT</th><th>RISK SCORE</th><th>ACTION</th></tr></thead><tbody id="fraud-rows"><tr><td colspan="7" class="table-loading">Loading fraud events…</td></tr></tbody></table></div></article>
+        </section>
+
+        <section class="page" id="page-transfer">
+          <div class="page-heading"><div><p class="eyebrow">ACCOUNT OPERATIONS</p><h1>New transfer</h1><p class="subtitle">Move funds between active accounts using an atomic SQL transaction.</p></div><span class="panel-tag">TRANSACTION SAFE</span></div>
+          <div class="transfer-layout">
+            <article class="panel transfer-panel"><div class="panel-heading"><div><h2>Transfer details</h2><p>All fields are required to continue.</p></div><span class="transfer-symbol">⇄</span></div>
+              <form id="transfer-form">
+                <label for="transfer-from">From account</label><select id="transfer-from" required><option value="">Loading accounts…</option></select>
+                <div class="swap-row"><span class="swap-line"></span><span class="swap-icon">↓</span><span class="swap-line"></span></div>
+                <label for="transfer-to">To account</label><select id="transfer-to" required><option value="">Select destination account</option></select>
+                <label for="transfer-amount">Transfer amount <span class="label-unit">INR (₹)</span></label><div class="amount-input"><span>₹</span><input id="transfer-amount" type="number" min="0.01" step="0.01" max="1000000000000" placeholder="0.00" required></div>
+                <div class="transfer-hint"><span>ⓘ</span> Both accounts must be active and the source must have enough balance.</div>
+                <div class="form-message" id="transfer-message" role="status" hidden></div>
+                <button class="button button-primary submit-transfer" id="transfer-submit" type="submit">Review & transfer <span>→</span></button>
+              </form>
+            </article>
+            <aside class="transfer-aside"><article class="panel"><span class="aside-icon mint">✓</span><h2>Protected by SQL transactions</h2><p>The transfer locks both accounts, validates available balance, writes debit and credit ledger entries, updates both balances, then commits as one unit. A failure triggers rollback.</p><div class="aside-divider"></div><div class="aside-detail"><span>Validation</span><strong>Source, destination & balance</strong></div><div class="aside-detail"><span>Ledger</span><strong>Debit + credit entries</strong></div><div class="aside-detail"><span>Failure handling</span><strong>ROLLBACK</strong></div></article><div class="demo-warning"><strong>Demo only</strong><p>Use synthetic data and a test database. Do not connect this portfolio project to real customer or production banking accounts.</p></div></aside>
+          </div>
+        </section>
+
+        <footer class="app-footer"><span>© 2026 Ledgerly Banking Workspace</span><span>Built with Express <i>·</i> MySQL <i>·</i> SQL</span></footer>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
