@@ -54,3 +54,11 @@ SELECT channel, COUNT(*) AS total_rows,
 FROM transactions
 GROUP BY channel
 ORDER BY total_rows DESC;
+
+
+-- Recent ledger inspection
+SELECT reference_code, account_id, transaction_type, amount,
+       transaction_time, channel, status
+FROM transactions
+ORDER BY transaction_time DESC, transaction_id DESC
+LIMIT 15;
