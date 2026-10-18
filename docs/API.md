@@ -73,3 +73,8 @@ npm test
 ```
 
 The tests start the server without database credentials and cover liveness, expected database-unavailable responses, transfer fail-closed behavior, and delivery of static assets. They do not replace integration tests against a disposable MySQL instance.
+
+
+## Caching and client handling
+
+The Express service sets `Cache-Control: no-store` on `/api` responses because even synthetic financial records should not be cached by shared intermediaries. Clients should treat `503` as a database/configuration issue, `403` on transfer as the explicit demo-write flag being disabled, and `409` as an account-state or available-balance conflict. Keep the transfer action disabled in public deployments unless the service is isolated to synthetic test data.
