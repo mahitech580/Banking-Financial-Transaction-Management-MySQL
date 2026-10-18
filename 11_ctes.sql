@@ -53,3 +53,7 @@ SELECT b.branch_code, b.branch_name, COALESCE(ba.ledger_rows, 0) AS ledger_rows,
 FROM branches AS b
 LEFT JOIN branch_activity AS ba ON ba.branch_id = b.branch_id
 ORDER BY successful_value DESC;
+
+
+-- Stage the aggregate before ranking customers
+WITH customer_value AS (SELECT a.customer_id,SUM(CASE WHEN t.status='SUCCESS' THEN t.amount ELSE 0 END) AS successful_value FROM accounts a LEFT JOIN transactions t ON t.account_id=a.account_id GROUP BY a.customer_id) SELECT c.customer_number,CONCAT(c.first_name,' ',c.last_name) AS customer_name,COALESCE(cv.successful_value,0) AS successful_value,DENSE_RANK() OVER(ORDER BY COALESCE(cv.successful_value,0) DESC) AS value_rank FROM customers c LEFT JOIN customer_value cv ON cv.customer_id=c.customer_id ORDER BY value_rank,customer_name;
