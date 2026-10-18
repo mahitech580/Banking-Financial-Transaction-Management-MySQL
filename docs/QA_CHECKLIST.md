@@ -22,7 +22,7 @@ Use this checklist before demonstrating the portfolio project or changing its da
 - [ ] Run scripts 01–07 in order.
 - [ ] Run `29_demo_operations_data.sql` to populate example cards, loans, repayments, fraud events, disputes and settlements.
 - [ ] Run read-only analytics and views, and confirm each referenced table exists.
-- [ ] Remember that script 01 is destructive: it drops and recreates the database.
+- [ ] Script 01 is non-destructive (`CREATE DATABASE IF NOT EXISTS`); perform any manual reset only on a disposable demo database.
 
 ## 4. Dashboard behavior
 
@@ -46,3 +46,7 @@ Use this checklist before demonstrating the portfolio project or changing its da
 - [ ] Turn the flag off after the demo.
 
 The automated smoke tests do not exercise successful MySQL transfers. Perform those checks only with an isolated database and reconcile the related rows before and after each test. This project is not production banking software.
+
+- [ ] Run the balance, repayment and fraud-score validation queries added to `03_constraints.sql` and confirm they return no invalid rows.
+- [ ] Review `29_demo_operations_data.sql` counts and referential-integrity checks after optional seed loading.
+- [ ] Verify API responses carry `Cache-Control: no-store` and the transfer route stays disabled by default.
