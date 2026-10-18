@@ -47,3 +47,7 @@ ORDER BY amount DESC, transaction_time DESC;
 
 -- Daily success rate uses all ledger rows as the denominator
 SELECT DATE(transaction_time) AS event_day,COUNT(*) AS attempts,SUM(status='SUCCESS') AS successes,ROUND(100.0*SUM(status='SUCCESS')/NULLIF(COUNT(*),0),2) AS success_rate_pct FROM transactions GROUP BY DATE(transaction_time) ORDER BY event_day;
+
+
+-- ISO-week bucket for a compact reporting trend
+SELECT YEARWEEK(transaction_time,3) AS iso_year_week,COUNT(*) AS attempts,SUM(CASE WHEN status='SUCCESS' THEN amount ELSE 0 END) AS successful_value FROM transactions GROUP BY YEARWEEK(transaction_time,3) ORDER BY iso_year_week;
