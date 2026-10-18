@@ -414,7 +414,7 @@
       notice("There are no rows to export yet.", "info");
       return;
     }
-    const csvCell = (v) => '"' + String(v ?? "").replace(/"/g, '""') + '"';
+    const csvCell = (v) => { const raw = String(v ?? ""); const guarded = /^[\t\r\n ]*[=+\-@]/.test(raw) ? "'" + raw : raw; return '"' + guarded.replace(/"/g, '""') + '"'; };
     const content = [headers, ...rows].map((row) => row.map(csvCell).join(",")).join("\r\n");
     const blob = new Blob(["\ufeff" + content], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
