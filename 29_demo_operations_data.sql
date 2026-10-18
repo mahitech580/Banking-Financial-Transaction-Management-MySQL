@@ -75,33 +75,33 @@ FROM loans l WHERE l.loan_type = 'EDUCATION'
   AND NOT EXISTS (SELECT 1 FROM loan_payments p WHERE p.loan_id = l.loan_id AND p.due_date = '2026-10-15');
 
 INSERT INTO fraud_events (transaction_id, detected_at, fraud_type, risk_score, action_taken)
-SELECT t.transaction_id, '2026-01-12 02:20:00', 'Unusual high-value online transaction', 88.00, 'REVIEW'
+SELECT t.transaction_id, '2026-10-12 02:20:00', 'Unusual high-value online transaction', 88.00, 'REVIEW'
 FROM transactions t WHERE t.reference_code = 'TX10011'
   AND NOT EXISTS (SELECT 1 FROM fraud_events f WHERE f.transaction_id = t.transaction_id AND f.fraud_type = 'Unusual high-value online transaction')
 UNION ALL
-SELECT t.transaction_id, '2026-01-14 01:50:00', 'Unusual transaction time', 64.00, 'REVIEW'
+SELECT t.transaction_id, '2026-10-14 01:50:00', 'Unusual transaction time', 64.00, 'REVIEW'
 FROM transactions t WHERE t.reference_code = 'TX10015'
   AND NOT EXISTS (SELECT 1 FROM fraud_events f WHERE f.transaction_id = t.transaction_id AND f.fraud_type = 'Unusual transaction time')
 UNION ALL
-SELECT t.transaction_id, '2026-01-17 18:20:00', 'Merchant risk review', 73.00, 'BLOCK'
+SELECT t.transaction_id, '2026-10-17 18:20:00', 'Merchant risk review', 73.00, 'BLOCK'
 FROM transactions t WHERE t.reference_code = 'TX10021'
   AND NOT EXISTS (SELECT 1 FROM fraud_events f WHERE f.transaction_id = t.transaction_id AND f.fraud_type = 'Merchant risk review');
 
 INSERT INTO disputes (transaction_id, opened_at, reason, disputed_amount, status)
-SELECT t.transaction_id, '2026-01-20 10:00:00', 'Customer reported an unrecognized purchase', 98000.00, 'OPEN'
+SELECT t.transaction_id, '2026-10-18 10:00:00', 'Customer reported an unrecognized purchase', 98000.00, 'OPEN'
 FROM transactions t WHERE t.reference_code = 'TX10011'
   AND NOT EXISTS (SELECT 1 FROM disputes d WHERE d.transaction_id = t.transaction_id AND d.reason = 'Customer reported an unrecognized purchase')
 UNION ALL
-SELECT t.transaction_id, '2026-01-22 14:30:00', 'Duplicate merchant charge investigation', 12500.00, 'WON'
+SELECT t.transaction_id, '2026-10-18 14:30:00', 'Duplicate merchant charge investigation', 12500.00, 'WON'
 FROM transactions t WHERE t.reference_code = 'TX10019'
   AND NOT EXISTS (SELECT 1 FROM disputes d WHERE d.transaction_id = t.transaction_id AND d.reason = 'Duplicate merchant charge investigation');
 
 INSERT INTO settlements (transaction_id, settled_at, settlement_amount, status)
-SELECT t.transaction_id, '2026-01-03 12:00:00', t.amount, 'SETTLED'
+SELECT t.transaction_id, '2026-10-03 12:00:00', t.amount, 'SETTLED'
 FROM transactions t WHERE t.reference_code = 'TX10001'
   AND NOT EXISTS (SELECT 1 FROM settlements s WHERE s.transaction_id = t.transaction_id)
 UNION ALL
-SELECT t.transaction_id, '2026-01-06 12:00:00', t.amount, 'SETTLED'
+SELECT t.transaction_id, '2026-10-05 20:00:00', t.amount, 'SETTLED'
 FROM transactions t WHERE t.reference_code = 'TX10002'
   AND NOT EXISTS (SELECT 1 FROM settlements s WHERE s.transaction_id = t.transaction_id)
 UNION ALL
