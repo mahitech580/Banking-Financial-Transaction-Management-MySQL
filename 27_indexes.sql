@@ -42,3 +42,9 @@ SHOW INDEX FROM transactions;
 
 -- Check whether the account/time index supports an account history lookup.
 EXPLAIN SELECT transaction_id,reference_code,amount,transaction_time FROM transactions WHERE account_id=1 ORDER BY transaction_time DESC LIMIT 20;
+
+
+-- A composite index on (account_id, transaction_time) can support account_id filters
+-- and account_id + time-range filters. It generally cannot replace an index whose
+-- leading predicate is only transaction_time. Validate workload plans before adding indexes.
+SELECT table_name,index_name,seq_in_index,column_name,cardinality FROM information_schema.statistics WHERE table_schema=DATABASE() ORDER BY table_name,index_name,seq_in_index;
