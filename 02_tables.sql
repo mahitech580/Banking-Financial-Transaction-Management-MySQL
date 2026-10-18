@@ -194,3 +194,12 @@ SELECT table_name, engine, table_rows
 FROM information_schema.tables
 WHERE table_schema = DATABASE()
 ORDER BY table_name;
+
+
+-- Column definition audit
+-- Inspect nullability and types for the financial ledger.
+SELECT table_name, column_name, column_type, is_nullable, column_key
+FROM information_schema.columns
+WHERE table_schema = DATABASE()
+  AND table_name IN ('accounts', 'transactions', 'transfers')
+ORDER BY table_name, ordinal_position;
