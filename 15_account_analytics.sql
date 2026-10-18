@@ -44,3 +44,7 @@ ORDER BY last_successful_activity;
 
 -- Compare successful credits and debits independently of the stored snapshot balance
 SELECT a.account_number,SUM(CASE WHEN t.status='SUCCESS' AND t.transaction_type='CREDIT' THEN t.amount ELSE 0 END) AS successful_credits,SUM(CASE WHEN t.status='SUCCESS' AND t.transaction_type='DEBIT' THEN t.amount ELSE 0 END) AS successful_debits,SUM(CASE WHEN t.status='SUCCESS' AND t.transaction_type='CREDIT' THEN t.amount WHEN t.status='SUCCESS' AND t.transaction_type='DEBIT' THEN -t.amount ELSE 0 END) AS net_ledger_flow FROM accounts a LEFT JOIN transactions t ON t.account_id=a.account_id GROUP BY a.account_id,a.account_number ORDER BY a.account_number;
+
+
+-- A useful operational segmentation query; thresholds are illustrative
+SELECT a.account_number,a.status,MAX(t.transaction_time) AS last_successful_at,CASE WHEN MAX(t.transaction_time) IS NULL THEN 'NEVER ACTIVE' WHEN MAX(t.transaction_time)<CURRENT_DATE-INTERVAL 90 DAY THEN 'DORMANT' WHEN MAX(t.transaction_time)<CURRENT_DATE-INTERVAL 30 DAY THEN 'LOW RECENCY' ELSE 'RECENT ACTIVITY' END AS activity_band FROM accounts a LEFT JOIN transactions t ON t.account_id=a.account_id AND t.status='SUCCESS' GROUP BY a.account_id,a.account_number,a.status ORDER BY last_successful_at;
