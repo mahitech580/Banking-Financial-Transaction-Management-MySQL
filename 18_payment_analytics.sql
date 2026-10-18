@@ -50,3 +50,6 @@ SELECT s.settlement_id,t.reference_code,s.status,s.settlement_amount,s.settled_a
 
 
 SELECT status,COUNT(*) AS dispute_count,SUM(disputed_amount) AS disputed_amount,ROUND(AVG(disputed_amount),2) AS average_dispute_amount FROM disputes GROUP BY status ORDER BY disputed_amount DESC;
+
+
+SELECT loan_id,COUNT(*) AS schedule_rows,SUM(amount_due) AS scheduled_amount,SUM(amount_paid) AS collected_amount,ROUND(100.0*SUM(amount_paid)/NULLIF(SUM(amount_due),0),2) AS collection_pct FROM loan_payments GROUP BY loan_id ORDER BY collection_pct,loan_id;
