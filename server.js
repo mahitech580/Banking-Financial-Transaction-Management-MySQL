@@ -5,7 +5,7 @@ const express = require("express");
 const helmet = require("helmet");
 const mysql = require("mysql2/promise");
 const path = require("node:path");
-const { parseTransactionStatus, validateTransferPayload } = require("./lib/validation");
+const { normalizeSearchTerm, parsePagination, parseTransactionStatus, validateTransferPayload } = require("./lib/validation");
 
 const app = express();
 const PORT = Number(process.env.PORT || 10000);
@@ -31,6 +31,9 @@ app.use("/api", (_req, res, next) => {
 });
 app.use(express.json({ limit: "20kb", strict: true }));
 app.use(express.static(path.join(__dirname, "public"), { extensions: ["html"] }));
+app.get("/docs/API.md", (_req, res) => {
+  res.type("text/markdown").sendFile(path.join(__dirname, "docs", "API.md"));
+});
 
 function makePool() {
   let options;
@@ -133,7 +136,9 @@ app.get("/api/overview", requireDatabase, asyncRoute(async (_req, res) => {
 }));
 
 app.get("/api/customers", requireDatabase, asyncRoute(async (req, res) => {
-  const q = String(req.query.q || "").trim().slice(0, 100);
+  const page = parsePagination(req.query, { defaultLimit: 250, maxLimit: 250 });
+  if (!page.ok) return res.status(400).json({ error: page.error });
+  const q = normalizeSearchTerm(req.query.q);
   const like = `%${q}%`;
   const [rows] = await pool.query(`
     SELECT c.customer_id, c.customer_number, c.first_name, c.last_name,
@@ -145,13 +150,17 @@ app.get("/api/customers", requireDatabase, asyncRoute(async (req, res) => {
     LEFT JOIN loans l ON l.customer_id = c.customer_id
     WHERE (? = '' OR c.customer_number LIKE ? OR c.first_name LIKE ? OR c.last_name LIKE ? OR c.email LIKE ?)
     GROUP BY c.customer_id, c.customer_number, c.first_name, c.last_name, c.email, c.phone, c.risk_level, c.customer_since
-    ORDER BY c.customer_id DESC LIMIT 250
-  `, [q, like, like, like, like]);
-  res.json({ data: rows });
+    ORDER BY c.customer_id DESC LIMIT ? OFFSET ?
+  `, [q, like, like, like, like, page.limit + 1, page.offset]);
+  const hasMore = rows.length > page.limit;
+  const data = hasMore ? rows.slice(0, page.limit) : rows;
+  res.json({ data, pagination: { limit: page.limit, offset: page.offset, returned: data.length, hasMore, nextOffset: hasMore ? page.offset + data.length : null } });
 }));
 
 app.get("/api/accounts", requireDatabase, asyncRoute(async (req, res) => {
-  const q = String(req.query.q || "").trim().slice(0, 100);
+  const page = parsePagination(req.query, { defaultLimit: 250, maxLimit: 250 });
+  if (!page.ok) return res.status(400).json({ error: page.error });
+  const q = normalizeSearchTerm(req.query.q);
   const like = `%${q}%`;
   const [rows] = await pool.query(`
     SELECT a.account_id, a.account_number, a.account_type, a.status, a.current_balance, a.opened_at,
@@ -160,13 +169,17 @@ app.get("/api/accounts", requireDatabase, asyncRoute(async (req, res) => {
     FROM accounts a JOIN customers c ON c.customer_id = a.customer_id
     LEFT JOIN branches b ON b.branch_id = a.branch_id
     WHERE (? = '' OR a.account_number LIKE ? OR c.customer_number LIKE ? OR c.first_name LIKE ? OR c.last_name LIKE ?)
-    ORDER BY a.account_id DESC LIMIT 250
-  `, [q, like, like, like, like]);
-  res.json({ data: rows });
+    ORDER BY a.account_id DESC LIMIT ? OFFSET ?
+  `, [q, like, like, like, like, page.limit + 1, page.offset]);
+  const hasMore = rows.length > page.limit;
+  const data = hasMore ? rows.slice(0, page.limit) : rows;
+  res.json({ data, pagination: { limit: page.limit, offset: page.offset, returned: data.length, hasMore, nextOffset: hasMore ? page.offset + data.length : null } });
 }));
 
 app.get("/api/transactions", requireDatabase, asyncRoute(async (req, res) => {
-  const q = String(req.query.q || "").trim().slice(0, 100);
+  const page = parsePagination(req.query, { defaultLimit: 300, maxLimit: 300 });
+  if (!page.ok) return res.status(400).json({ error: page.error });
+  const q = normalizeSearchTerm(req.query.q);
   const statusResult = parseTransactionStatus(req.query.status);
   if (!statusResult.ok) return res.status(400).json({ error: statusResult.error });
   const statusFilter = statusResult.value;
@@ -180,9 +193,11 @@ app.get("/api/transactions", requireDatabase, asyncRoute(async (req, res) => {
     LEFT JOIN merchants m ON m.merchant_id = t.merchant_id
     WHERE (? = '' OR t.reference_code LIKE ? OR a.account_number LIKE ? OR c.first_name LIKE ? OR c.last_name LIKE ?)
       AND (? = '' OR t.status = ?)
-    ORDER BY t.transaction_time DESC, t.transaction_id DESC LIMIT 300
-  `, [q, like, like, like, like, statusFilter, statusFilter]);
-  res.json({ data: rows });
+    ORDER BY t.transaction_time DESC, t.transaction_id DESC LIMIT ? OFFSET ?
+  `, [q, like, like, like, like, statusFilter, statusFilter, page.limit + 1, page.offset]);
+  const hasMore = rows.length > page.limit;
+  const data = hasMore ? rows.slice(0, page.limit) : rows;
+  res.json({ data, pagination: { limit: page.limit, offset: page.offset, returned: data.length, hasMore, nextOffset: hasMore ? page.offset + data.length : null } });
 }));
 
 app.get("/api/analytics", requireDatabase, asyncRoute(async (_req, res) => {
