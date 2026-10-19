@@ -36,6 +36,9 @@ app.use("/api", (_req, res, next) => {
 });
 app.use(express.json({ limit: "20kb", strict: true }));
 app.use(express.static(path.join(__dirname, "public"), { extensions: ["html"] }));
+app.get("/docs/API.md", (_req, res) => {
+  res.type("text/markdown").sendFile(path.join(__dirname, "docs", "API.md"));
+});
 
 function makePool() {
   let options;
@@ -156,7 +159,7 @@ app.get("/api/customers", requireDatabase, asyncRoute(async (req, res) => {
   `, [q, like, like, like, like, pagination.limit + 1, pagination.offset]);
   const hasMore = rows.length > pagination.limit;
   const data = hasMore ? rows.slice(0, pagination.limit) : rows;
-  res.json({ data, pagination: { ...pagination, returned: data.length, hasMore, nextOffset: hasMore ? pagination.offset + data.length : null } });
+  res.json({ data, pagination: { limit: pagination.limit, offset: pagination.offset, returned: data.length, hasMore, nextOffset: hasMore ? pagination.offset + data.length : null } });
 }));
 
 app.get("/api/accounts", requireDatabase, asyncRoute(async (req, res) => {
@@ -175,7 +178,7 @@ app.get("/api/accounts", requireDatabase, asyncRoute(async (req, res) => {
   `, [q, like, like, like, like, pagination.limit + 1, pagination.offset]);
   const hasMore = rows.length > pagination.limit;
   const data = hasMore ? rows.slice(0, pagination.limit) : rows;
-  res.json({ data, pagination: { ...pagination, returned: data.length, hasMore, nextOffset: hasMore ? pagination.offset + data.length : null } });
+  res.json({ data, pagination: { limit: pagination.limit, offset: pagination.offset, returned: data.length, hasMore, nextOffset: hasMore ? pagination.offset + data.length : null } });
 }));
 
 app.get("/api/transactions", requireDatabase, asyncRoute(async (req, res) => {
@@ -199,7 +202,7 @@ app.get("/api/transactions", requireDatabase, asyncRoute(async (req, res) => {
   `, [q, like, like, like, like, statusFilter, statusFilter, pagination.limit + 1, pagination.offset]);
   const hasMore = rows.length > pagination.limit;
   const data = hasMore ? rows.slice(0, pagination.limit) : rows;
-  res.json({ data, pagination: { ...pagination, returned: data.length, hasMore, nextOffset: hasMore ? pagination.offset + data.length : null } });
+  res.json({ data, pagination: { limit: pagination.limit, offset: pagination.offset, returned: data.length, hasMore, nextOffset: hasMore ? pagination.offset + data.length : null } });
 }));
 
 app.get("/api/analytics", requireDatabase, asyncRoute(async (_req, res) => {
