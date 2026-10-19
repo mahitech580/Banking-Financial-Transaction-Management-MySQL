@@ -23,12 +23,12 @@ app.use(helmet({
     }
   }
 }));
-app.use(express.json({ limit: "20kb" }));
-// Banking and account data should not be cached by shared browsers or proxies.
+// Apply no-store before parsing so even malformed/oversized API requests are not cached.
 app.use("/api", (_req, res, next) => {
   res.set("Cache-Control", "no-store");
   next();
 });
+app.use(express.json({ limit: "20kb", strict: true }));
 app.use(express.static(path.join(__dirname, "public"), { extensions: ["html"] }));
 
 function makePool() {
@@ -403,8 +403,15 @@ app.get("/api", (_req, res) => {
 app.use("/api", (_req, res) => res.status(404).json({ error: "API endpoint not found." }));
 
 app.use((error, _req, res, _next) => {
-  console.error("[api-error]", error.code || error.name || "Error", error.message);
   if (res.headersSent) return;
+  // Body-parser errors are client input errors, not internal server failures.
+  if (error.type === "entity.parse.failed" || error instanceof SyntaxError && error.status === 400 && Object.prototype.hasOwnProperty.call(error, "body")) {
+    return res.status(400).json({ error: "Request body must contain valid JSON." });
+  }
+  if (error.type === "entity.too.large") {
+    return res.status(413).json({ error: "Request body exceeds the 20 KB limit." });
+  }
+  console.error("[api-error]", error.code || error.name || "Error", error.message);
   if (error.code === "ER_NO_SUCH_TABLE" || error.code === "ER_BAD_DB_ERROR") {
     return res.status(503).json({ error: "The MySQL schema is missing. Run the project's numbered SQL setup scripts first." });
   }
