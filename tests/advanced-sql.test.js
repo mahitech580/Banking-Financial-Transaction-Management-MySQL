@@ -9,7 +9,7 @@ const numberedFiles = sqlFiles.filter((name) => /^\d{3}_.+\.sql$/.test(name));
 const supplementalFiles = sqlFiles.filter((name) => name.startsWith("supplemental_"));
 
 test("numbered advanced SQL case studies have a unique, gap-free sequence", () => {
-  assert.ok(numberedFiles.length >= 316, "expected the numbered case-study library");
+  assert.ok(numberedFiles.length >= 342, "expected the numbered case-study library");
   assert.equal(new Set(numberedFiles).size, numberedFiles.length, "numbered filenames must be unique");
   for (const [index, name] of numberedFiles.entries()) {
     assert.equal(Number(name.slice(0, 3)), index + 1, `unexpected sequence at ${name}`);
