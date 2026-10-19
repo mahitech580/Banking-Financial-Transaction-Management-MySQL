@@ -1,0 +1,3 @@
+-- Successful transaction amount distribution by decile; ties are deterministically ordered by ID.
+WITH ranked AS (SELECT transaction_id,amount,NTILE(10) OVER(ORDER BY amount,transaction_id) amount_decile FROM transactions WHERE status='SUCCESS')
+SELECT amount_decile,COUNT(*) transaction_count,MIN(amount) minimum_amount,MAX(amount) maximum_amount,ROUND(AVG(amount),2) average_amount FROM ranked GROUP BY amount_decile ORDER BY amount_decile;
