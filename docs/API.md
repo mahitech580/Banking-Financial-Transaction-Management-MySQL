@@ -61,6 +61,10 @@ Typical errors:
 
 This endpoint is **not authenticated** and is not designed for real financial accounts. Only enable it for a test database populated with synthetic records.
 
+## Request size and JSON parsing
+
+JSON request bodies are limited to 20 KB. Malformed JSON receives HTTP `400` with a stable `error` message; payloads exceeding the configured limit receive HTTP `413`. API responses, including these parser errors, use `Cache-Control: no-store`. Clients should correct the request rather than retrying the same invalid payload. The server does not echo the submitted body in the error response.
+
 ## Error handling
 
 API errors use a JSON object with an `error` field. The application intentionally omits database credentials and raw SQL from client-facing responses. Detailed operational errors are logged by the server; avoid placing secrets or personal information in logs.
