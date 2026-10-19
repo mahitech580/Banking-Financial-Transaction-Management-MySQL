@@ -48,7 +48,7 @@ The SQL exercises illustrate relational querying and business analysis; rule-bas
 
 ### Advanced SQL case-study library
 
-The `advanced_sql/` directory contains **296 standalone, read-only analytical examples** named `001` through `296`. The library covers customer/account footprint, transaction volume and reliability, ticket-size distributions, merchant/card performance, inter-account transfers, loan portfolio and repayment collection, fraud investigation, disputes, settlements, audit activity, branch operations, customer cohorts, and combined customer exposure. Each file is a separate SELECT/CTE case study intended for the synthetic demo schema; risk indicators are for analytical review only, not proof of fraud or automated financial decisions.
+The `advanced_sql/` directory contains **296 numbered read-only analytical examples** (`001`–`296`) plus **24 supplemental reports** prefixed `supplemental_`. The numbered library covers customer/account footprint, transaction volume and reliability, ticket-size distributions, merchant/card performance, transfers, lending and repayments, fraud review, disputes, settlements, audit activity, branch operations, customer cohorts, and combined customer exposure. Supplemental files add reconciliation and cross-table data-quality checks without colliding with the numbered sequence. All reports use synthetic demo data; review signals are not proof of fraud or automated financial decisions.
 
 Run these scripts only after the required base tables exist. Load `29_demo_operations_data.sql` before card, loan, fraud, dispute, and settlement reports when those optional tables would otherwise be empty. Each file starts with its business question; run examples individually in MySQL Workbench or the MySQL CLI and review the result before adapting it to another dataset.
 
@@ -145,6 +145,8 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for Render configuration and [docs/API.md](do
 | GET | `/api/disputes` | Dispute records |
 | GET | `/api/fraud-events` | Recorded investigation events |
 | POST | `/api/transfers` | Demo-only account transfer |
+
+The customer, account, and transaction list endpoints accept bounded `limit`/`offset` pagination and return `hasMore`/`nextOffset` metadata. Transaction-status filters reject unsupported values. See [docs/API.md](docs/API.md) for the exact contract.
 
 The transfer request body is JSON:
 
