@@ -107,6 +107,7 @@ app.get("/api/health", asyncRoute(async (_req, res) => {
     );
     res.json({ ok: true, database: "connected", databaseName: DATABASE_NAME, tableCount: Number(tables[0].table_count), transfersEnabled });
   } catch (error) {
+    console.error("[database-health]", error.code || error.name || "Error");
     res.status(503).json({ ok: false, database: "unreachable", transfersEnabled, message: "MySQL connection failed. Check the database host, credentials, TLS settings and schema." });
   }
 }));
@@ -424,7 +425,7 @@ app.use((error, _req, res, _next) => {
   if (error.type === "entity.too.large") {
     return res.status(413).json({ error: "Request body exceeds the 20 KB limit." });
   }
-  console.error("[api-error]", error.code || error.name || "Error", error.message);
+  console.error("[api-error]", error.code || error.name || "Error");
   if (error.code === "ER_NO_SUCH_TABLE" || error.code === "ER_BAD_DB_ERROR") {
     return res.status(503).json({ error: "The MySQL schema is missing. Run the project's numbered SQL setup scripts first." });
   }
