@@ -5,7 +5,7 @@ const express = require("express");
 const helmet = require("helmet");
 const mysql = require("mysql2/promise");
 const path = require("node:path");
-const { parseTransactionStatus } = require("./lib/validation");
+const { parseTransactionStatus, validateTransferPayload } = require("./lib/validation");
 
 const app = express();
 const PORT = Number(process.env.PORT || 10000);
@@ -302,16 +302,9 @@ app.get("/api/settlements", requireDatabase, asyncRoute(async (_req, res) => {
 
 app.post("/api/transfers", requireDatabase, asyncRoute(async (req, res) => {
   if (!transfersEnabled) return res.status(403).json({ error: "Transfers are disabled on this instance. Set ENABLE_DEMO_TRANSFERS=true only for a test database containing synthetic data." });
-  const fromId = Number(req.body?.fromAccountId);
-  const toId = Number(req.body?.toAccountId);
-  const amount = Number(req.body?.amount);
-  if (!Number.isSafeInteger(fromId) || fromId < 1 || !Number.isSafeInteger(toId) || toId < 1) {
-    return res.status(400).json({ error: "Choose valid source and destination accounts." });
-  }
-  if (fromId === toId) return res.status(400).json({ error: "Source and destination accounts must be different." });
-  if (!Number.isFinite(amount) || amount <= 0 || Math.round(amount * 100) !== amount * 100 || amount > 1_000_000_000_000) {
-    return res.status(400).json({ error: "Enter an amount greater than zero with at most two decimal places." });
-  }
+  const validation = validateTransferPayload(req.body);
+  if (!validation.ok) return res.status(400).json({ error: validation.error });
+  const { fromAccountId: fromId, toAccountId: toId, amount, amountSql } = validation.value;
 
   const connection = await pool.getConnection();
   try {
@@ -335,7 +328,6 @@ app.post("/api/transfers", requireDatabase, asyncRoute(async (req, res) => {
       return res.status(409).json({ error: "Insufficient available balance." });
     }
 
-    const amountSql = amount.toFixed(2);
     const outgoingRef = `TRF-${crypto.randomBytes(8).toString("hex").toUpperCase()}`;
     const incomingRef = `TRF-${crypto.randomBytes(8).toString("hex").toUpperCase()}`;
     const [outgoing] = await connection.query(
