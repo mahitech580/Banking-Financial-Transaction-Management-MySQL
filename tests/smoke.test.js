@@ -111,3 +111,11 @@ test("API catalogue is cache-protected and keeps transfer mode explicit", async 
   assert.ok(transfer, "transfer endpoint should be documented in the API catalogue");
   assert.match(transfer.description, /disabled/i);
 });
+
+
+test("documented API reference is served from the application origin", async () => {
+  const response = await fetch(baseUrl + "/docs/API.md");
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type") || "", /text\/markdown/i);
+  assert.match(await response.text(), /Pagination/);
+});
