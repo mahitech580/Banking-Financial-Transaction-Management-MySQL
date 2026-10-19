@@ -35,6 +35,21 @@ Returns the API route catalogue (overview, customers, accounts, transactions, an
 
 Search terms are trimmed and length-limited by the server. Queries use parameter binding rather than concatenating user-provided search strings into SQL.
 
+## Pagination
+
+The customer, account, and transaction list endpoints accept `limit` and `offset` query parameters. Responses preserve the existing `data` array and add a `pagination` object containing `limit`, `offset`, `returned`, `hasMore`, and `nextOffset`.
+
+| Endpoint | Default limit | Maximum limit |
+|---|---:|---:|
+| `GET /api/customers` | 250 | 250 |
+| `GET /api/accounts` | 250 | 250 |
+| `GET /api/transactions` | 300 | 300 |
+
+`offset` defaults to 0 and is capped at 100,000. Invalid limits, negative offsets, and offsets above the cap return HTTP `400`. When `hasMore` is true, pass the returned `nextOffset` to fetch the next page. The queries bind pagination values as parameters rather than interpolating user-provided text.
+
+Transaction `status` filters are case-insensitive and must be one of `PENDING`, `SUCCESS`, `FAILED`, or `REVERSED`. An unsupported status is rejected with HTTP `400` instead of silently falling back to an unfiltered list.
+
+
 ## Transfer operation
 
 ### `POST /api/transfers`
