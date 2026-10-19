@@ -4,37 +4,41 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const directory = path.join(__dirname, "..", "advanced_sql");
-const sqlFiles = fs.readdirSync(directory).filter((name) => /^\d{3}_.+\.sql$/.test(name)).sort();
+const sqlFiles = fs.readdirSync(directory).filter((name) => name.endsWith(".sql")).sort();
+const numberedFiles = sqlFiles.filter((name) => /^\d{3}_.+\.sql$/.test(name));
+const supplementalFiles = sqlFiles.filter((name) => name.startsWith("supplemental_"));
 
-test("advanced SQL library has unique, sequentially named case studies", () => {
-  assert.ok(sqlFiles.length >= 296, "expected the documented 296-case advanced SQL library");
-  assert.equal(new Set(sqlFiles).size, sqlFiles.length, "filenames must be unique");
-  for (const [index, name] of sqlFiles.entries()) {
+test("numbered advanced SQL case studies have a unique, gap-free sequence", () => {
+  assert.ok(numberedFiles.length >= 296, "expected the numbered case-study library");
+  assert.equal(new Set(numberedFiles).size, numberedFiles.length, "numbered filenames must be unique");
+  for (const [index, name] of numberedFiles.entries()) {
     assert.equal(Number(name.slice(0, 3)), index + 1, `unexpected sequence at ${name}`);
   }
 });
 
-test("advanced SQL case studies are distinct and read-only SELECT/CTE examples", () => {
+test("all numbered and supplemental SQL files have distinct contents", () => {
+  assert.equal(new Set(sqlFiles).size, sqlFiles.length, "SQL filenames must be unique");
   const sources = sqlFiles.map((name) => fs.readFileSync(path.join(directory, name), "utf8").trim());
-  assert.equal(new Set(sources).size, sources.length, "case-study contents must not be duplicates");
-  for (const [index, source] of sources.entries()) {
-    const executable = source.replace(/^--.*$/gm, "").trimStart();
-    assert.match(executable, /^(WITH\b|SELECT\b)/i, `${sqlFiles[index]} must start with a read-only SELECT or CTE`);
-  }
+  assert.equal(new Set(sources).size, sources.length, "SQL files must not duplicate one another");
 });
 
-test("every advanced SQL case study has a meaningful introductory comment", () => {
+test("every SQL example is a read-only SELECT or CTE with an introductory comment", () => {
   for (const name of sqlFiles) {
     const source = fs.readFileSync(path.join(directory, name), "utf8");
     assert.match(source.trimStart(), /^--\s+\S/m, `${name} needs an introductory comment`);
     assert.ok(source.trim().length > 80, `${name} looks incomplete`);
+    const executable = source.replace(/^--.*$/gm, "").trimStart();
+    assert.match(executable, /^(WITH\b|SELECT\b)/i, `${name} must begin with SELECT or CTE`);
+    assert.doesNotMatch(source, /^\s*(DROP|TRUNCATE|DELETE|INSERT|UPDATE|REPLACE|ALTER)\b/im,
+      `${name} must remain read-only`);
   }
 });
 
-test("advanced SQL examples do not start with obvious data-changing statements", () => {
-  const forbidden = /^\s*(DROP|TRUNCATE|DELETE|INSERT|UPDATE|REPLACE|ALTER)\b/im;
-  for (const name of sqlFiles) {
-    const source = fs.readFileSync(path.join(directory, name), "utf8");
-    assert.doesNotMatch(source, forbidden, `${name} must remain read-only`);
+test("supplemental reports are explicitly prefixed and do not occupy numbered slots", () => {
+  assert.ok(supplementalFiles.length >= 24, "expected the retained overlapping reports");
+  assert.equal(numberedFiles.length + supplementalFiles.length, sqlFiles.length,
+    "every SQL file must be numbered or explicitly supplemental");
+  for (const name of supplementalFiles) {
+    assert.match(name, /^supplemental_[a-z0-9_]+\.sql$/);
   }
 });
