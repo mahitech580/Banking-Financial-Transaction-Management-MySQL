@@ -22,18 +22,18 @@
       </a>
       <div class="workspace-label">WORKSPACE</div>
       <nav class="nav-list" aria-label="Main navigation">
-        <button class="nav-item active" data-page="overview"><span class="nav-icon">◫</span>Overview</button>
-        <button class="nav-item" data-page="accounts"><span class="nav-icon">▤</span>Accounts</button>
-        <button class="nav-item" data-page="customers"><span class="nav-icon">♙</span>Customers</button>
-        <button class="nav-item" data-page="transactions"><span class="nav-icon">⇄</span>Transactions</button>
-        <button class="nav-item" data-page="analytics"><span class="nav-icon">▥</span>Analytics</button>
-        <button class="nav-item" data-page="branches"><span class="nav-icon">⌂</span>Branches</button>
-        <button class="nav-item" data-page="cards"><span class="nav-icon">▭</span>Cards</button>
-        <button class="nav-item" data-page="loans"><span class="nav-icon">▱</span>Loans</button>
-        <button class="nav-item" data-page="repayments"><span class="nav-icon">↻</span>Repayments</button>
-        <button class="nav-item" data-page="settlements"><span class="nav-icon">✓</span>Settlements</button>
-        <button class="nav-item" data-page="disputes"><span class="nav-icon">⚑</span>Disputes</button>
-        <button class="nav-item" data-page="fraud"><span class="nav-icon">⌁</span>Fraud & risk</button>
+        <button class="nav-item active" data-page="overview" aria-current="page"><span class="nav-icon" aria-hidden="true">◫</span>Overview</button>
+        <button class="nav-item" data-page="accounts"><span class="nav-icon" aria-hidden="true">▤</span>Accounts</button>
+        <button class="nav-item" data-page="customers"><span class="nav-icon" aria-hidden="true">♙</span>Customers</button>
+        <button class="nav-item" data-page="transactions"><span class="nav-icon" aria-hidden="true">⇄</span>Transactions</button>
+        <button class="nav-item" data-page="analytics"><span class="nav-icon" aria-hidden="true">▥</span>Analytics</button>
+        <button class="nav-item" data-page="branches"><span class="nav-icon" aria-hidden="true">⌂</span>Branches</button>
+        <button class="nav-item" data-page="cards"><span class="nav-icon" aria-hidden="true">▭</span>Cards</button>
+        <button class="nav-item" data-page="loans"><span class="nav-icon" aria-hidden="true">▱</span>Loans</button>
+        <button class="nav-item" data-page="repayments"><span class="nav-icon" aria-hidden="true">↻</span>Repayments</button>
+        <button class="nav-item" data-page="settlements"><span class="nav-icon" aria-hidden="true">✓</span>Settlements</button>
+        <button class="nav-item" data-page="disputes"><span class="nav-icon" aria-hidden="true">⚑</span>Disputes</button>
+        <button class="nav-item" data-page="fraud"><span class="nav-icon" aria-hidden="true">⌁</span>Fraud & risk</button>
       </nav>
       <div class="sidebar-spacer"></div>
       <div class="sidebar-note">
@@ -47,7 +47,7 @@
 
     <main class="main-area" id="main-content" tabindex="-1">
       <header class="topbar">
-        <button class="mobile-menu" id="mobile-menu" aria-label="Toggle navigation">☰</button>
+        <button class="mobile-menu" id="mobile-menu" aria-label="Toggle navigation" aria-controls="sidebar" aria-expanded="false">☰</button>
         <div class="breadcrumbs"><span>Workspace</span><b>/</b><strong id="breadcrumb-current">Overview</strong></div>
         <div class="top-actions">
           <span class="environment-pill"><i></i> DEMO ENVIRONMENT</span>
@@ -91,19 +91,19 @@
 
         <section class="page" id="page-accounts">
           <div class="page-heading"><div><p class="eyebrow">CUSTOMER ASSETS</p><h1>Accounts</h1><p class="subtitle">Browse accounts, available balances and branch details.</p></div><button class="button button-secondary" id="accounts-export">↓ Export CSV</button></div>
-          <div class="list-toolbar"><div class="search-box"><span>⌕</span><input id="accounts-search" type="search" placeholder="Search account, customer…" aria-label="Search accounts"></div><span class="result-count" id="accounts-count">— accounts</span></div>
+          <div class="list-toolbar"><div class="search-box"><span>⌕</span><input id="accounts-search" type="search" placeholder="Search account, customer…" aria-label="Search accounts"></div><span class="result-count" id="accounts-count" role="status" aria-live="polite">— accounts</span></div>
           <article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>ACCOUNT</th><th>CUSTOMER</th><th>TYPE</th><th>BRANCH</th><th>BALANCE</th><th>STATUS</th><th>OPENED</th></tr></thead><tbody id="accounts-rows"><tr><td colspan="7" class="table-loading">Loading accounts…</td></tr></tbody></table></div></article>
         </section>
 
         <section class="page" id="page-customers">
           <div class="page-heading"><div><p class="eyebrow">PEOPLE & RELATIONSHIPS</p><h1>Customers</h1><p class="subtitle">Customer directory, risk levels and linked products.</p></div><button class="button button-secondary" id="customers-export">↓ Export CSV</button></div>
-          <div class="list-toolbar"><div class="search-box"><span>⌕</span><input id="customers-search" type="search" placeholder="Search name, email or customer ID…" aria-label="Search customers"></div><span class="result-count" id="customers-count">— customers</span></div>
+          <div class="list-toolbar"><div class="search-box"><span>⌕</span><input id="customers-search" type="search" placeholder="Search name, email or customer ID…" aria-label="Search customers"></div><span class="result-count" id="customers-count" role="status" aria-live="polite">— customers</span></div>
           <article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>CUSTOMER</th><th>CUSTOMER ID</th><th>EMAIL</th><th>ACCOUNTS</th><th>LOANS</th><th>RISK</th><th>JOINED</th></tr></thead><tbody id="customers-rows"><tr><td colspan="7" class="table-loading">Loading customers…</td></tr></tbody></table></div></article>
         </section>
 
         <section class="page" id="page-transactions">
           <div class="page-heading"><div><p class="eyebrow">ACTIVITY LEDGER</p><h1>Transactions</h1><p class="subtitle">Search transaction references and review processing statuses.</p></div><button class="button button-secondary" id="transactions-export">↓ Export CSV</button></div>
-          <div class="list-toolbar"><div class="search-box"><span>⌕</span><input id="transactions-search" type="search" placeholder="Search reference, account, customer…" aria-label="Search transactions"></div><select id="transactions-status" class="filter-select" aria-label="Filter transaction status"><option value="">All statuses</option><option>SUCCESS</option><option>PENDING</option><option>FAILED</option><option>REVERSED</option></select><span class="result-count" id="transactions-count">— transactions</span></div>
+          <div class="list-toolbar"><div class="search-box"><span>⌕</span><input id="transactions-search" type="search" placeholder="Search reference, account, customer…" aria-label="Search transactions"></div><select id="transactions-status" class="filter-select" aria-label="Filter transaction status"><option value="">All statuses</option><option>SUCCESS</option><option>PENDING</option><option>FAILED</option><option>REVERSED</option></select><span class="result-count" id="transactions-count" role="status" aria-live="polite">— transactions</span></div>
           <article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>REFERENCE</th><th>CUSTOMER / ACCOUNT</th><th>TYPE</th><th>CHANNEL</th><th>DATE & TIME</th><th>AMOUNT</th><th>STATUS</th></tr></thead><tbody id="transactions-rows"><tr><td colspan="7" class="table-loading">Loading transactions…</td></tr></tbody></table></div></article>
         </section>
 
