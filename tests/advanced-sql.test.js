@@ -7,10 +7,19 @@ const directory = path.join(__dirname, "..", "advanced_sql");
 const sqlFiles = fs.readdirSync(directory).filter((name) => /^\d{3}_.+\.sql$/.test(name)).sort();
 
 test("advanced SQL library has unique, sequentially named case studies", () => {
-  assert.ok(sqlFiles.length >= 65, "expected the documented advanced SQL library");
+  assert.ok(sqlFiles.length >= 296, "expected the documented 296-case advanced SQL library");
   assert.equal(new Set(sqlFiles).size, sqlFiles.length, "filenames must be unique");
   for (const [index, name] of sqlFiles.entries()) {
     assert.equal(Number(name.slice(0, 3)), index + 1, `unexpected sequence at ${name}`);
+  }
+});
+
+test("advanced SQL case studies are distinct and read-only SELECT/CTE examples", () => {
+  const sources = sqlFiles.map((name) => fs.readFileSync(path.join(directory, name), "utf8").trim());
+  assert.equal(new Set(sources).size, sources.length, "case-study contents must not be duplicates");
+  for (const [index, source] of sources.entries()) {
+    const executable = source.replace(/^--.*$/gm, "").trimStart();
+    assert.match(executable, /^(WITH\\b|SELECT\\b)/i, `${sqlFiles[index]} must start with a read-only SELECT or CTE`);
   }
 });
 
