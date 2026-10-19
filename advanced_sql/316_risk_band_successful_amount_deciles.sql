@@ -7,9 +7,8 @@ WITH ranked AS (
   JOIN transactions t ON t.account_id=a.account_id
   WHERE t.status='SUCCESS'
 )
-SELECT risk_level,amount_decile,COUNT(*) transaction_count,
+SELECT risk_level,amount_decile,channel,COUNT(*) transaction_count,
        ROUND(MIN(amount),2) minimum_amount,ROUND(MAX(amount),2) maximum_amount,
-       ROUND(AVG(amount),2) average_amount,
-       ROUND(AVG(amount*1.0),2) decile_mean_amount
-FROM ranked GROUP BY risk_level,amount_decile
-ORDER BY risk_level,amount_decile;
+       ROUND(AVG(amount),2) average_amount
+FROM ranked GROUP BY risk_level,amount_decile,channel
+ORDER BY risk_level,amount_decile,channel;
