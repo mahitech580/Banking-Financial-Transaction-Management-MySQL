@@ -119,3 +119,23 @@ test("documented API reference is served from the application origin", async () 
   assert.match(response.headers.get("content-type") || "", /text\/markdown/i);
   assert.match(await response.text(), /Pagination/);
 });
+
+
+test("dashboard announces navigation changes and respects motion preferences", async () => {
+  const [pageResponse, scriptResponse, styleResponse] = await Promise.all([
+    fetch(baseUrl + "/"),
+    fetch(baseUrl + "/app.js"),
+    fetch(baseUrl + "/styles.css")
+  ]);
+  const page = await pageResponse.text();
+  const script = await scriptResponse.text();
+  const styles = await styleResponse.text();
+
+  assert.match(page, /id="mobile-menu"[^>]*aria-expanded="false"/);
+  assert.match(page, /data-page="overview" aria-current="page"/);
+  assert.match(page, /id="accounts-count" role="status" aria-live="polite"/);
+  assert.match(script, /setAttribute\("aria-current", "page"\)/);
+  assert.match(script, /setAttribute\("aria-expanded", String\(expanded\)\)/);
+  assert.match(script, /button\.disabled = !transfersAvailable/);
+  assert.match(styles, /prefers-reduced-motion/);
+});
