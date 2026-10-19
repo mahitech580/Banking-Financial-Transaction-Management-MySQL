@@ -5,6 +5,12 @@ const express = require("express");
 const helmet = require("helmet");
 const mysql = require("mysql2/promise");
 const path = require("node:path");
+const {
+  normalizeSearchTerm,
+  parsePagination,
+  parseTransactionStatus,
+  validateTransferPayload
+} = require("./lib/validation");
 
 const app = express();
 const PORT = Number(process.env.PORT || 10000);
@@ -132,7 +138,9 @@ app.get("/api/overview", requireDatabase, asyncRoute(async (_req, res) => {
 }));
 
 app.get("/api/customers", requireDatabase, asyncRoute(async (req, res) => {
-  const q = String(req.query.q || "").trim().slice(0, 100);
+  const pagination = parsePagination(req.query, { defaultLimit: 250, maxLimit: 250 });
+  if (!pagination.ok) return res.status(400).json({ error: pagination.error });
+  const q = normalizeSearchTerm(req.query.q);
   const like = `%${q}%`;
   const [rows] = await pool.query(`
     SELECT c.customer_id, c.customer_number, c.first_name, c.last_name,
@@ -144,13 +152,17 @@ app.get("/api/customers", requireDatabase, asyncRoute(async (req, res) => {
     LEFT JOIN loans l ON l.customer_id = c.customer_id
     WHERE (? = '' OR c.customer_number LIKE ? OR c.first_name LIKE ? OR c.last_name LIKE ? OR c.email LIKE ?)
     GROUP BY c.customer_id, c.customer_number, c.first_name, c.last_name, c.email, c.phone, c.risk_level, c.customer_since
-    ORDER BY c.customer_id DESC LIMIT 250
-  `, [q, like, like, like, like]);
-  res.json({ data: rows });
+    ORDER BY c.customer_id DESC LIMIT ? OFFSET ?
+  `, [q, like, like, like, like, pagination.limit + 1, pagination.offset]);
+  const hasMore = rows.length > pagination.limit;
+  const data = hasMore ? rows.slice(0, pagination.limit) : rows;
+  res.json({ data, pagination: { ...pagination, returned: data.length, hasMore, nextOffset: hasMore ? pagination.offset + data.length : null } });
 }));
 
 app.get("/api/accounts", requireDatabase, asyncRoute(async (req, res) => {
-  const q = String(req.query.q || "").trim().slice(0, 100);
+  const pagination = parsePagination(req.query, { defaultLimit: 250, maxLimit: 250 });
+  if (!pagination.ok) return res.status(400).json({ error: pagination.error });
+  const q = normalizeSearchTerm(req.query.q);
   const like = `%${q}%`;
   const [rows] = await pool.query(`
     SELECT a.account_id, a.account_number, a.account_type, a.status, a.current_balance, a.opened_at,
@@ -159,17 +171,21 @@ app.get("/api/accounts", requireDatabase, asyncRoute(async (req, res) => {
     FROM accounts a JOIN customers c ON c.customer_id = a.customer_id
     LEFT JOIN branches b ON b.branch_id = a.branch_id
     WHERE (? = '' OR a.account_number LIKE ? OR c.customer_number LIKE ? OR c.first_name LIKE ? OR c.last_name LIKE ?)
-    ORDER BY a.account_id DESC LIMIT 250
-  `, [q, like, like, like, like]);
-  res.json({ data: rows });
+    ORDER BY a.account_id DESC LIMIT ? OFFSET ?
+  `, [q, like, like, like, like, pagination.limit + 1, pagination.offset]);
+  const hasMore = rows.length > pagination.limit;
+  const data = hasMore ? rows.slice(0, pagination.limit) : rows;
+  res.json({ data, pagination: { ...pagination, returned: data.length, hasMore, nextOffset: hasMore ? pagination.offset + data.length : null } });
 }));
 
 app.get("/api/transactions", requireDatabase, asyncRoute(async (req, res) => {
-  const q = String(req.query.q || "").trim().slice(0, 100);
-  const status = String(req.query.status || "").trim().toUpperCase();
+  const pagination = parsePagination(req.query, { defaultLimit: 300, maxLimit: 300 });
+  if (!pagination.ok) return res.status(400).json({ error: pagination.error });
+  const status = parseTransactionStatus(req.query.status);
+  if (!status.ok) return res.status(400).json({ error: status.error });
+  const q = normalizeSearchTerm(req.query.q);
   const like = `%${q}%`;
-  const allowedStatuses = new Set(["PENDING", "SUCCESS", "FAILED", "REVERSED"]);
-  const statusFilter = allowedStatuses.has(status) ? status : "";
+  const statusFilter = status.value;
   const [rows] = await pool.query(`
     SELECT t.transaction_id, t.reference_code, t.transaction_type, t.amount, t.transaction_time,
       t.channel, t.status, a.account_number,
@@ -179,9 +195,11 @@ app.get("/api/transactions", requireDatabase, asyncRoute(async (req, res) => {
     LEFT JOIN merchants m ON m.merchant_id = t.merchant_id
     WHERE (? = '' OR t.reference_code LIKE ? OR a.account_number LIKE ? OR c.first_name LIKE ? OR c.last_name LIKE ?)
       AND (? = '' OR t.status = ?)
-    ORDER BY t.transaction_time DESC, t.transaction_id DESC LIMIT 300
-  `, [q, like, like, like, like, statusFilter, statusFilter]);
-  res.json({ data: rows });
+    ORDER BY t.transaction_time DESC, t.transaction_id DESC LIMIT ? OFFSET ?
+  `, [q, like, like, like, like, statusFilter, statusFilter, pagination.limit + 1, pagination.offset]);
+  const hasMore = rows.length > pagination.limit;
+  const data = hasMore ? rows.slice(0, pagination.limit) : rows;
+  res.json({ data, pagination: { ...pagination, returned: data.length, hasMore, nextOffset: hasMore ? pagination.offset + data.length : null } });
 }));
 
 app.get("/api/analytics", requireDatabase, asyncRoute(async (_req, res) => {
@@ -301,16 +319,9 @@ app.get("/api/settlements", requireDatabase, asyncRoute(async (_req, res) => {
 
 app.post("/api/transfers", requireDatabase, asyncRoute(async (req, res) => {
   if (!transfersEnabled) return res.status(403).json({ error: "Transfers are disabled on this instance. Set ENABLE_DEMO_TRANSFERS=true only for a test database containing synthetic data." });
-  const fromId = Number(req.body?.fromAccountId);
-  const toId = Number(req.body?.toAccountId);
-  const amount = Number(req.body?.amount);
-  if (!Number.isSafeInteger(fromId) || fromId < 1 || !Number.isSafeInteger(toId) || toId < 1) {
-    return res.status(400).json({ error: "Choose valid source and destination accounts." });
-  }
-  if (fromId === toId) return res.status(400).json({ error: "Source and destination accounts must be different." });
-  if (!Number.isFinite(amount) || amount <= 0 || Math.round(amount * 100) !== amount * 100 || amount > 1_000_000_000_000) {
-    return res.status(400).json({ error: "Enter an amount greater than zero with at most two decimal places." });
-  }
+  const validation = validateTransferPayload(req.body);
+  if (!validation.ok) return res.status(400).json({ error: validation.error });
+  const { fromAccountId: fromId, toAccountId: toId, amount, amountSql } = validation.value;
 
   const connection = await pool.getConnection();
   try {
@@ -334,7 +345,6 @@ app.post("/api/transfers", requireDatabase, asyncRoute(async (req, res) => {
       return res.status(409).json({ error: "Insufficient available balance." });
     }
 
-    const amountSql = amount.toFixed(2);
     const outgoingRef = `TRF-${crypto.randomBytes(8).toString("hex").toUpperCase()}`;
     const incomingRef = `TRF-${crypto.randomBytes(8).toString("hex").toUpperCase()}`;
     const [outgoing] = await connection.query(
