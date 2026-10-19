@@ -7,6 +7,7 @@ This repository keeps the original MySQL capstone SQL scripts and adds a browser
 - **Frontend:** vanilla HTML, CSS and JavaScript in `public/`
 - **API:** Node.js + Express in `server.js`
 - **Database:** MySQL 8.0+ using the schema already defined by this project
+- **Shutdown lifecycle:** SIGTERM/SIGINT first stop accepting HTTP requests, then close the MySQL pool; a 10-second fallback prevents a stuck shutdown.
 - **Transactional transfer:** locks source and destination rows, validates status and funds, writes debit and credit transaction rows, updates balances, inserts a transfer record, and commits atomically. Errors roll the transaction back.
 
 The hosted dashboard is a portfolio demonstration, not a real banking service. Use synthetic sample data only.
@@ -95,3 +96,4 @@ A `render.yaml` Blueprint is included for the Node web service. To deploy:
 - **Missing tables:** create `banking_financial_management` by running setup scripts 01–07 in order.
 - **Empty loan/fraud screens:** run `29_demo_operations_data.sql` after loading customers, accounts and transactions.
 - **Render deploy is healthy but API says database offline:** the web process is running; set a valid reachable `MYSQL_URL` in Render and recheck `/api/health`.
+- **List results stop at the default page size:** use the documented `limit` and `offset` parameters on the customer, account, and transaction APIs.
