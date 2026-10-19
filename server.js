@@ -430,12 +430,42 @@ app.use((error, _req, res, _next) => {
   res.status(500).json({ error: "The request could not be completed. Check the server log for details." });
 });
 
-app.listen(PORT, "0.0.0.0", () => {
+const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`Banking dashboard listening on 0.0.0.0:${PORT}; MySQL configured: ${Boolean(pool)}`);
 });
 
 async function closePool() {
   if (pool) await pool.end();
 }
-process.on("SIGTERM", () => closePool().finally(() => process.exit(0)));
-process.on("SIGINT", () => closePool().finally(() => process.exit(0)));
+
+let shuttingDown = false;
+function shutdown(signal) {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  console.log("[shutdown] Received", signal);
+
+  const timeout = setTimeout(() => {
+    console.error("[shutdown] Graceful shutdown timed out");
+    process.exit(1);
+  }, 10_000);
+  timeout.unref();
+
+  server.close((serverError) => {
+    closePool().then(() => {
+      clearTimeout(timeout);
+      if (serverError) {
+        console.error("[shutdown] HTTP server close failed");
+        process.exitCode = 1;
+      } else {
+        process.exitCode = 0;
+      }
+    }).catch((error) => {
+      clearTimeout(timeout);
+      console.error("[shutdown] Database pool close failed", error.code || error.name || "Error");
+      process.exitCode = 1;
+    });
+  });
+}
+
+process.once("SIGTERM", () => shutdown("SIGTERM"));
+process.once("SIGINT", () => shutdown("SIGINT"));
