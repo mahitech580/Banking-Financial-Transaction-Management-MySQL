@@ -7,7 +7,7 @@ Use this checklist before demonstrating the portfolio project or changing its da
 - [ ] Install dependencies with `npm install`.
 - [ ] Run `npm run check` to parse the server and browser JavaScript.
 - [ ] Run `npm test` to execute the no-database smoke tests and SQL-library static checks.
-- [ ] Confirm the numbered advanced SQL library is sequential through `120` and all examples are read-only reports.
+- [ ] Confirm numbered advanced SQL filenames form a gap-free sequence through `296`, supplemental files use the `supplemental_` prefix, and all reports are read-only.
 - [ ] Confirm the latest commit is on `main` and the deployment uses that branch.
 
 ## 1.1 HTTP input regression checks
@@ -37,11 +37,14 @@ Use this checklist before demonstrating the portfolio project or changing its da
 
 - [ ] Overview metrics match direct SQL counts and sums.
 - [ ] Customer and account search returns matching rows.
+- [ ] Customer, account and transaction list APIs return bounded pagination metadata; `hasMore` and `nextOffset` select the next page.
+- [ ] Invalid limits, offsets and transaction status filters return HTTP 400 when MySQL is configured.
 - [ ] Transaction search and each status filter operate as expected.
 - [ ] Analytics show sensible values or a clear empty state.
 - [ ] Cards, branches, loans, repayments, settlements, disputes and fraud screens handle empty datasets.
 - [ ] CSV exports contain the visible rows and correctly quote commas and double quotes.
 - [ ] Desktop and mobile navigation can reach every page.
+- [ ] Mobile-menu `aria-expanded` state matches the visible sidebar; navigation marks the active page and result counters announce updates.
 
 ## 5. Demo transfer tests — isolated synthetic data only
 
@@ -59,3 +62,4 @@ The automated smoke tests do not exercise successful MySQL transfers. Perform th
 - [ ] Run the balance, repayment and fraud-score validation queries added to `03_constraints.sql` and confirm they return no invalid rows.
 - [ ] Review `29_demo_operations_data.sql` counts and referential-integrity checks after optional seed loading.
 - [ ] Verify API responses carry `Cache-Control: no-store` and the transfer route stays disabled by default.
+- [ ] Confirm `/docs/API.md` is served and matches the implemented pagination/status-filter contract.
