@@ -39,6 +39,9 @@ All repository seed rows are synthetic. Do not run setup or write-operation scri
 | 287–296 | Customer total exposure by risk, branch, city, cohort, age, account/loan portfolio size and active-account relationship |
 | 297–306 | Customer quarterly net flow, product breadth/exposure, account channel preference, loan payment timeliness, settlement latency, card purchase repeats, long activity gaps, ledger-flow diagnostics, branch failure trends and fraud-detection latency |
 | 307–316 | Card merchant breadth, multi-branch footprints, dispute exposure, age-band success rates, overdue repayments, account-type flows, statistical outliers, cumulative branch flows, settlement amount variance and risk-band deciles |
+| 317–326 | Account activation cohorts, customer balance concentration, transfer routes, credit-card spend-to-limit proxy, weekly branch activity, settlement queue age, retry sequences, channel interarrival gaps, repayment collection and status transitions |
+| 327–336 | Cross-source card/ledger comparisons, merchant-value volatility, channel concentration, customer channel breadth, dispute aging, quarterly repayment timeliness, fraud-signal overlap, branch risk mix and cross-account repeats |
+| 337–342 | Card issue cohorts, timestamp-based settlement speed, customer attempt-volume outliers, monthly account coverage and net flow, loan schedule/principal ratios and audit event gaps |
 
 ## Supplemental reconciliation and data-quality checks
 
