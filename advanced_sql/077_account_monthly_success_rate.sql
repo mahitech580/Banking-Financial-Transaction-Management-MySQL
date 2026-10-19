@@ -1,0 +1,3 @@
+-- Monthly reliability by account; failed and successful rows remain distinct attempts.
+WITH m AS (SELECT account_id, DATE_FORMAT(transaction_time,'%Y-%m-01') month_start, COUNT(*) attempts, SUM(status='SUCCESS') successes, SUM(status='FAILED') failures FROM transactions GROUP BY account_id, DATE_FORMAT(transaction_time,'%Y-%m-01'))
+SELECT account_id,month_start,attempts,successes,failures,ROUND(100*successes/NULLIF(attempts,0),2) success_rate_pct,successes-LAG(successes) OVER(PARTITION BY account_id ORDER BY month_start) change_vs_prior_month FROM m ORDER BY account_id,month_start;
