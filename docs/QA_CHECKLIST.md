@@ -6,7 +6,8 @@ Use this checklist before demonstrating the portfolio project or changing its da
 
 - [ ] Install dependencies with `npm install`.
 - [ ] Run `npm run check` to parse the server and browser JavaScript.
-- [ ] Run `npm test` to execute the no-database smoke tests.
+- [ ] Run `npm test` to execute the no-database smoke tests and SQL-library static checks.
+- [ ] Confirm the numbered advanced SQL library is sequential through `120` and all examples are read-only reports.
 - [ ] Confirm the latest commit is on `main` and the deployment uses that branch.
 
 ## 1.1 HTTP input regression checks

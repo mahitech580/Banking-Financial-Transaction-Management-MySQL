@@ -1,6 +1,6 @@
 # Advanced SQL Case-Study Library
 
-This folder contains **96 standalone analytical SQL examples** (`001`–`096`) built on the `banking_financial_management` schema. Each file is intended to be opened and executed individually. Newer examples include a short business question or explanatory comment.
+This folder contains **120 standalone analytical SQL examples** (`001`–`120`) built on the `banking_financial_management` schema. Each file is intended to be opened and executed individually. Newer examples include a short business question or explanatory comment.
 
 ## Requirements and setup
 
@@ -25,7 +25,10 @@ Do not run database reset/setup scripts against production data. All seed record
 | 058–065 | Card portfolio and account/customer coverage |
 | 066–076 | Additional customer, account, transaction and operations analysis |
 | 077–086 | Monthly success rate, customer net flow, amount deciles, merchant failures, activity gaps, recency, transfer consistency and daily/channel summaries |
-| 087–096 | Risk/activity matrix, account concentration, branch mix, first/last success, outlier candidates, balance-flow diagnostics, card-vs-ledger comparisons and weekly channel performance |
+| 087–096 | Risk/activity matrix, account concentration, branch mix, customer cohort activity, outlier candidates, balance-flow diagnostics, card-vs-ledger comparisons and weekly channel performance |
+| 097–106 | Channel amount deciles, onboarding cohorts, inactive high-balance accounts, repeated-amount review, first-transaction latency, account trends, branch coverage and merchant comparisons |
+| 107–116 | Account value ranking, ATM/fee summaries, amount integrity checks, retry candidates, historical baselines, weekend/weekday analysis and amount-band conversion |
+| 117–120 | Channel-days without successes, branch balance share, customers without transaction history and account channel adoption |
 
 ## Interpretation notes
 

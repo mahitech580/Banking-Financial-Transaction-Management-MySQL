@@ -1,0 +1,27 @@
+name: Project quality checks
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  node-quality:
+    name: Static checks and no-database tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install application dependencies
+        run: npm install --no-audit --no-fund
+      - name: Run syntax checks and test suite
+        run: npm run verify
