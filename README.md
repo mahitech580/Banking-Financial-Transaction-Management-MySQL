@@ -48,7 +48,7 @@ The SQL exercises illustrate relational querying and business analysis; rule-bas
 
 ### Advanced SQL case-study library
 
-The `advanced_sql/` directory contains **120 standalone, read-only analytical examples** named `001` through `120`. They extend the core modules with monthly growth, quantile distributions, account/customer rankings, branch and channel performance, loan repayment signals, retry-pattern review, transaction integrity diagnostics, and card/account portfolio analysis.
+The `advanced_sql/` directory contains **296 standalone, read-only analytical examples** named `001` through `296`. The library covers customer/account footprint, transaction volume and reliability, ticket-size distributions, merchant/card performance, inter-account transfers, loan portfolio and repayment collection, fraud investigation, disputes, settlements, audit activity, branch operations, customer cohorts, and combined customer exposure. Each file is a separate SELECT/CTE case study intended for the synthetic demo schema; risk indicators are for analytical review only, not proof of fraud or automated financial decisions.
 
 Run these scripts only after the required base tables exist. Load `29_demo_operations_data.sql` before card, loan, fraud, dispute, and settlement reports when those optional tables would otherwise be empty. Each file starts with its business question; run examples individually in MySQL Workbench or the MySQL CLI and review the result before adapting it to another dataset.
 
