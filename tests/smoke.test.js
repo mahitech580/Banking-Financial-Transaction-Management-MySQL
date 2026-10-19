@@ -111,3 +111,29 @@ test("API catalogue is cache-protected and keeps transfer mode explicit", async 
   assert.ok(transfer, "transfer endpoint should be documented in the API catalogue");
   assert.match(transfer.description, /disabled/i);
 });
+
+
+test("API reference is served from the same application origin", async () => {
+  const response = await fetch(baseUrl + "/docs/API.md");
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type") || "", /text\/markdown/i);
+  assert.match(await response.text(), /Pagination/);
+});
+
+test("dashboard exposes accessible mobile navigation and live result counts", async () => {
+  const [pageResponse, scriptResponse, cssResponse] = await Promise.all([
+    fetch(baseUrl + "/"),
+    fetch(baseUrl + "/app.js"),
+    fetch(baseUrl + "/styles.css")
+  ]);
+  const page = await pageResponse.text();
+  const script = await scriptResponse.text();
+  const css = await cssResponse.text();
+  assert.match(page, /id="mobile-menu"[^>]*aria-controls="sidebar" aria-expanded="false"/);
+  assert.match(page, /data-page="overview" aria-current="page"/);
+  assert.match(page, /id="accounts-count" role="status" aria-live="polite"/);
+  assert.match(script, /setAttribute\("aria-current", "page"\)/);
+  assert.match(script, /setAttribute\("aria-expanded", String\(expanded\)\)/);
+  assert.match(script, /button\.disabled = !transfersAvailable/);
+  assert.match(css, /prefers-reduced-motion/);
+});
