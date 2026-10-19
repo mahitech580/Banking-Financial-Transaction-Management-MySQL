@@ -19,7 +19,7 @@ test("advanced SQL case studies are distinct and read-only SELECT/CTE examples",
   assert.equal(new Set(sources).size, sources.length, "case-study contents must not be duplicates");
   for (const [index, source] of sources.entries()) {
     const executable = source.replace(/^--.*$/gm, "").trimStart();
-    assert.match(executable, /^(WITH\\b|SELECT\\b)/i, `${sqlFiles[index]} must start with a read-only SELECT or CTE`);
+    assert.match(executable, /^(WITH\b|SELECT\b)/i, `${sqlFiles[index]} must start with a read-only SELECT or CTE`);
   }
 });
 
