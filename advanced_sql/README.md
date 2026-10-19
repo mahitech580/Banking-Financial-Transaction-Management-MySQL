@@ -1,52 +1,75 @@
 # Advanced SQL Case-Study Library
 
-This folder contains **120 standalone analytical SQL examples** (`001`–`120`) built on the `banking_financial_management` schema. Each file is intended to be opened and executed individually. Newer examples include a short business question or explanatory comment.
+This directory contains **296 sequentially numbered analytical case studies** (`001`–`296`) plus **24 supplemental queries** prefixed with `supplemental_`. Supplemental files preserve added analytics that previously collided with the numbered sequence.
 
 ## Requirements and setup
 
 1. Use MySQL 8.0.18 or newer.
-2. Create the schema and base tables by running root scripts `01_database_schema.sql` through `07_transaction_data.sql` in order.
-3. Run `29_demo_operations_data.sql` if you want the optional card, loan repayment, fraud, dispute and settlement reports to return seeded examples.
-4. Open one script at a time in MySQL Workbench or the MySQL CLI. These examples are intended as read-only analytical queries.
+2. Initialize the schema and base records with root scripts `01_database_schema.sql` through `07_transaction_data.sql` in the order documented in the root README.
+3. Run `29_demo_operations_data.sql` only for queries requiring optional card, loan-payment, fraud, dispute, settlement, or operations data.
+4. Execute one analytical report at a time in MySQL Workbench or the MySQL CLI. Prefer a read-only MySQL account for reporting.
 
-Do not run database reset/setup scripts against production data. All seed records in this repository are synthetic.
+All repository seed rows are synthetic. Do not run setup or write-operation scripts against production data.
 
-## Case-study map
+## Numbered topic map
 
 | Scripts | Topic |
 |---|---|
-| 001–008 | Monthly summaries, growth, success rates, credit/debit flow, rankings, median and percentiles |
-| 009–015 | Running values, first/last activity, inactivity and customer frequency |
-| 016–024 | Daily/hourly/weekday patterns, channels, types and merchants |
-| 025–030 | Relative outliers, branch/account balances and branch trends |
-| 031–040 | Loan portfolio, repayments, overdue candidates and exposure |
-| 041–050 | Fraud review candidates, risk bands, repeated alerts and transaction sequences |
-| 051–057 | Settlements, reconciliation differences and disputes |
-| 058–065 | Card portfolio and account/customer coverage |
-| 066–076 | Additional customer, account, transaction and operations analysis |
-| 077–086 | Monthly success rate, customer net flow, amount deciles, merchant failures, activity gaps, recency, transfer consistency and daily/channel summaries |
-| 087–096 | Risk/activity matrix, account concentration, branch mix, customer cohort activity, outlier candidates, balance-flow diagnostics, card-vs-ledger comparisons and weekly channel performance |
-| 097–106 | Channel amount deciles, onboarding cohorts, inactive high-balance accounts, repeated-amount review, first-transaction latency, account trends, branch coverage and merchant comparisons |
-| 107–116 | Account value ranking, ATM/fee summaries, amount integrity checks, retry candidates, historical baselines, weekend/weekday analysis and amount-band conversion |
-| 117–120 | Channel-days without successes, branch balance share, customers without transaction history and account channel adoption |
+| 001–024 | Transaction fundamentals, date-based summaries, channel mix and customer activity |
+| 025–065 | Distribution/outlier analysis, account and branch reports, lending, fraud, settlement/dispute and card topics |
+| 066–096 | Customer/account activity, windows and rolling metrics, retry candidates and reconciliation diagnostics |
+| 097–106 | Customer account footprint by risk, branch, city, cohort, age, account type/status, opening year and balance band |
+| 107–126 | Ledger volume and reliability by channel, transaction type/status, branch, customer risk, account type and time |
+| 127–136 | Transaction-ticket distribution by amount and transaction dimensions |
+| 137–146 | Merchant performance by merchant traits, channel, branch, customer segment and time |
+| 147–156 | Card inventory, status, limits, age, branch and customer cohort |
+| 157–166 | Card spending by channel, status, card type, merchant, branch, risk and time |
+| 167–176 | Transfer flows by status, initiation time, source/destination branch, account type and customer risk |
+| 177–186 | Loan portfolio by type, status, branch, borrower risk, rate, tenure and principal |
+| 187–196 | Repayment collection by payment status, loan type, risk, branch, due date, overdue age and timing |
+| 197–206 | Fraud workload by event type, action, risk, channel, status, branch and detection time |
+| 207–216 | Dispute resolution by status, reason, channel, branch, customer risk, age and amount band |
+| 217–226 | Settlement reconciliation by status, channel, merchant, branch, transaction status, latency and amount |
+| 227–236 | Audit activity by entity, action, event date/time, JSON detail type and entity/action pair |
+| 237–246 | Account-balance profiles by branch, city, account type/status, risk, opening period and balance band |
+| 247–256 | Customer cohort activity by signup cohort, transaction period, risk, branch, channel, type, status and amount |
+| 257–266 | Branch operations by geography, channel, account type, risk, month, merchant category and time |
+| 267–276 | Merchant/card activity and review signals by merchant traits, card type, channel, risk and period |
+| 277–286 | Loan collection efficiency by loan type/status, branch, customer risk, due month, tenure, payment status, rate, principal and overdue band |
+| 287–296 | Customer total exposure by risk, branch, city, cohort, age, account/loan portfolio size and active-account relationship |
 
-## Interpretation notes
+## Supplemental reconciliation and data-quality checks
 
-- Transaction amount totals must be interpreted alongside transaction status. A failed, pending or reversed row is not the same as a successful financial movement.
-- An outlier query or rule-based alert is a review candidate, not proof of fraud or malicious intent.
-- Settlement mismatches and balance-flow differences are diagnostic candidates, not automatic evidence that a particular source is correct.
-- Card activity and ledger activity may overlap; do not add them together without a de-duplication model.
-- Window-function examples require MySQL 8-compatible window functions.
-- The seeded dataset is intentionally small. Performance conclusions require a larger representative test dataset and query-plan inspection.
+The `supplemental_*.sql` reports cover cross-table ownership alignment for cards and loans; settlement timestamps, amounts and duplicate records; dispute amount and repeated-case checks; fraud action/score review; audit-log volume and entity churn; overdue repayment exposure; payment-status consistency; transfer debit/credit matching; account status/balance checks; card credit-limit configuration; and cross-branch customer account footprints.
+
+These reports only surface candidates for review. For example, a customer may validly hold an account at a different branch, and multiple settlement or dispute records can be valid lifecycle events.
+
+## Interpretation guardrails
+
+- Count transaction attempts separately from successful movements. Failed, pending and reversed rows are not successful financial flows.
+- Gross transaction value is not automatically net revenue, loss, or balance change.
+- An unusual-activity pattern is a review candidate, not proof of fraud or intent.
+- Settlement mismatches and balance-flow differences do not establish which system is correct.
+- Stored balances cannot be reconstructed from partial transaction flows without opening-balance history and defined posting semantics.
+- Card and account-ledger events can overlap; do not add amounts without a de-duplication policy.
+- Time buckets use the MySQL session time zone. Align it before comparing extracts across environments.
+- Seed data is small and suitable for learning, not production benchmarking.
 
 ## Quality checks
 
-Run `npm run check` and `npm test`. The static advanced-SQL checks validate naming sequence, introductory comments and obvious destructive statements; they do not parse SQL grammar or prove that every query executes against a live MySQL instance.
+Run:
 
-## Root project references
+```bash
+npm run check
+npm test
+```
+
+Static checks validate the numbered filename sequence, supplemental naming, non-empty case-study files, introductory comments, distinct file contents and basic read-only query shape. They do not parse all MySQL syntax or replace execution against a disposable MySQL integration database.
+
+## References
 
 - [Core project README](../README.md)
-- [Database and dashboard deployment](../DEPLOYMENT.md)
+- [Deployment guide](../DEPLOYMENT.md)
 - [API reference](../docs/API.md)
 - [QA checklist](../docs/QA_CHECKLIST.md)
 - [Security policy](../SECURITY.md)
