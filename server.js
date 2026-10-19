@@ -5,6 +5,7 @@ const express = require("express");
 const helmet = require("helmet");
 const mysql = require("mysql2/promise");
 const path = require("node:path");
+const { parseTransactionStatus } = require("./lib/validation");
 
 const app = express();
 const PORT = Number(process.env.PORT || 10000);
@@ -166,10 +167,10 @@ app.get("/api/accounts", requireDatabase, asyncRoute(async (req, res) => {
 
 app.get("/api/transactions", requireDatabase, asyncRoute(async (req, res) => {
   const q = String(req.query.q || "").trim().slice(0, 100);
-  const status = String(req.query.status || "").trim().toUpperCase();
+  const statusResult = parseTransactionStatus(req.query.status);
+  if (!statusResult.ok) return res.status(400).json({ error: statusResult.error });
+  const statusFilter = statusResult.value;
   const like = `%${q}%`;
-  const allowedStatuses = new Set(["PENDING", "SUCCESS", "FAILED", "REVERSED"]);
-  const statusFilter = allowedStatuses.has(status) ? status : "";
   const [rows] = await pool.query(`
     SELECT t.transaction_id, t.reference_code, t.transaction_type, t.amount, t.transaction_time,
       t.channel, t.status, a.account_number,
