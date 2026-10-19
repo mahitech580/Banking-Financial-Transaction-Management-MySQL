@@ -1,6 +1,6 @@
 # Advanced SQL Case-Study Library
 
-This directory contains **316 sequentially numbered analytical case studies** (`001`–`316` plus **24 supplemental queries** prefixed with `supplemental_`. Supplemental files preserve added analytics that previously collided with the numbered sequence.
+This directory contains **342 sequentially numbered analytical case studies** (`001`–`342`) plus **24 supplemental queries** prefixed with `supplemental_`. Supplemental files preserve added analytics that previously collided with the numbered sequence.
 
 ## Requirements and setup
 
