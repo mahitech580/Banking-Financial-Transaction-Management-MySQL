@@ -69,7 +69,15 @@ test("transfer validation rejects invalid identifiers, self-transfer and invalid
     { fromAccountId: 1, toAccountId: 2, amount: -1 },
     { fromAccountId: 1, toAccountId: 2, amount: 1.234 },
     { fromAccountId: 1, toAccountId: 2, amount: MAX_TRANSFER_AMOUNT + 0.01 },
-    { fromAccountId: 1, toAccountId: 2, amount: "not-money" }
+    { fromAccountId: 1, toAccountId: 2, amount: "not-money" },
+    { fromAccountId: true, toAccountId: 2, amount: 1 },
+    { fromAccountId: 1, toAccountId: ["2"], amount: 1 },
+    { fromAccountId: 1, toAccountId: 2, amount: true },
+    { fromAccountId: 1, toAccountId: 2, amount: ["1"] },
+    { fromAccountId: 1, toAccountId: 2, amount: "0x10" },
+    { fromAccountId: 1, toAccountId: 2, amount: "1e3" },
+    { fromAccountId: "1e0", toAccountId: 2, amount: 1 },
+    { fromAccountId: 1, toAccountId: 2, amount: "1.230" }
   ];
   for (const payload of invalid) {
     assert.equal(validateTransferPayload(payload).ok, false, JSON.stringify(payload));
