@@ -1,0 +1,5 @@
+-- Segment customers by last successful transaction; no successful activity is kept as its own segment.
+WITH last_activity AS (SELECT a.customer_id,MAX(t.transaction_time) last_success_at FROM accounts a JOIN transactions t ON t.account_id=a.account_id WHERE t.status='SUCCESS' GROUP BY a.customer_id)
+SELECT c.customer_id,c.customer_number,c.risk_level,la.last_success_at,DATEDIFF(CURRENT_DATE,DATE(la.last_success_at)) days_since_success,
+CASE WHEN la.last_success_at IS NULL THEN 'NO_SUCCESSFUL_ACTIVITY' WHEN la.last_success_at>=CURRENT_DATE-INTERVAL 30 DAY THEN 'ACTIVE_30D' WHEN la.last_success_at>=CURRENT_DATE-INTERVAL 90 DAY THEN 'DORMANT_31_TO_90D' ELSE 'INACTIVE_OVER_90D' END activity_segment
+FROM customers c LEFT JOIN last_activity la ON la.customer_id=c.customer_id ORDER BY days_since_success DESC;
