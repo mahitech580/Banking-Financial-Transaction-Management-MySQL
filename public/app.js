@@ -5,6 +5,7 @@
   const cache = { accounts: [], customers: [], transactions: [], branches: [], cards: [], loans: [], repayments: [], settlements: [], disputes: [], fraud: [], analytics: null };
   let activePage = "overview";
   let searchTimer;
+  let transfersAvailable = false;
 
   const currency = (value) => {
     const n = Number(value || 0);
@@ -35,7 +36,11 @@
       headers: { ...(options.body ? { "Content-Type": "application/json" } : {}), ...(options.headers || {}) }
     });
     const payload = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(payload.error || payload.message || `Request failed (${response.status})`);
+    if (!response.ok) {
+      const error = new Error(payload.error || payload.message || `Request failed (${response.status})`);
+      error.status = response.status;
+      throw error;
+    }
     return payload;
   }
 
@@ -68,6 +73,7 @@
   }
 
   function updateTransferAvailability(enabled) {
+    transfersAvailable = Boolean(enabled);
     const button = $("#transfer-submit");
     const message = $("#transfer-message");
     if (button) button.disabled = !enabled;
@@ -400,12 +406,16 @@
     if (!target) return;
     activePage = page;
     document.querySelectorAll(".page").forEach((el) => el.classList.toggle("active", el === target));
-    document.querySelectorAll("[data-page]").forEach((el) => {
-      if (el.classList.contains("nav-item")) el.classList.toggle("active", el.dataset.page === page);
+    document.querySelectorAll(".nav-item").forEach((el) => {
+      const current = el.dataset.page === page;
+      el.classList.toggle("active", current);
+      if (current) el.setAttribute("aria-current", "page");
+      else el.removeAttribute("aria-current");
     });
     const title = target.querySelector("h1")?.textContent.trim() || "Overview";
     $("#breadcrumb-current").textContent = title.replace(" ✳", "");
     $("#sidebar").classList.remove("open");
+    $("#mobile-menu").setAttribute("aria-expanded", "false");
     loadPage(page);
   }
 
@@ -474,11 +484,12 @@
       await loadTransferAccounts();
       await loadOverview();
     } catch (error) {
+      if (error.status === 403 || error.status === 503) updateTransferAvailability(false);
       message.hidden = false;
       message.className = "form-message error";
       message.textContent = error.message;
     } finally {
-      button.disabled = false;
+      button.disabled = !transfersAvailable;
       button.innerHTML = 'Review & transfer <span>→</span>';
     }
   }
@@ -492,7 +503,12 @@
       navigate(link.dataset.pageLink);
     }
   });
-  $("#mobile-menu").addEventListener("click", () => $("#sidebar").classList.toggle("open"));
+  $("#mobile-menu").addEventListener("click", () => {
+    const sidebar = $("#sidebar");
+    const expanded = !sidebar.classList.contains("open");
+    sidebar.classList.toggle("open", expanded);
+    $("#mobile-menu").setAttribute("aria-expanded", String(expanded));
+  });
   $("#refresh-button").addEventListener("click", async () => {
     await checkHealth();
     await loadPage(activePage);
