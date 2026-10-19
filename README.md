@@ -48,9 +48,9 @@ The SQL exercises illustrate relational querying and business analysis; rule-bas
 
 ### Advanced SQL case-study library
 
-The `advanced_sql/` directory contains **120 standalone, read-only analytical examples** named `001` through `120`. They extend the core modules with monthly growth, quantile distributions, account/customer rankings, branch and channel performance, loan repayment signals, retry-pattern review, transaction integrity diagnostics, and card/account portfolio analysis.
+The `advanced_sql/` directory contains a sequentially numbered library of read-only analytical reports, plus `supplemental_*.sql` examples kept outside the number sequence to avoid filename collisions. Topics include monthly growth, transaction reliability, account/customer rankings, merchant and card performance, transfer flow, lending, repayments, fraud workload, disputes, and settlement reconciliation.
 
-Run these scripts only after the required base tables exist. Load `29_demo_operations_data.sql` before card, loan, fraud, dispute, and settlement reports when those optional tables would otherwise be empty. Each file starts with its business question; run examples individually in MySQL Workbench or the MySQL CLI and review the result before adapting it to another dataset.
+Run these scripts only after the required base tables exist. Load `29_demo_operations_data.sql` before card, loan, fraud, dispute, and settlement reports when those optional tables would otherwise be empty. Each numbered report has a unique prefix; supplemental examples preserve their old identifiers in the filename for traceability. Run reports individually in MySQL Workbench or the MySQL CLI and review the result before adapting it to another dataset.
 
 ## Requirements
 
