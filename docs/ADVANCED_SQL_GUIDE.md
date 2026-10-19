@@ -26,7 +26,7 @@ npm run check
 npm test
 ```
 
-The Node test suite checks filename sequencing, business-question annotations, and obvious destructive SQL statements. It does not parse SQL grammar or prove that queries execute against a live MySQL instance. Run integration checks against a disposable database before treating a query as verified.
+The Node test suite checks sequential filenames for all 120 scripts, introductory comments, and obvious destructive SQL statements. It does not parse SQL grammar or prove that queries execute against a live MySQL instance. Run integration checks against a disposable database before treating a query as verified.
 
 ## Extending the library
 
