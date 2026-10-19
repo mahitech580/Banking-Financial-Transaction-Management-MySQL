@@ -132,6 +132,7 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for Render configuration and [docs/API.md](do
 | GET | `/healthz` | Web-process liveness (does not require MySQL) |
 | GET | `/api/health` | MySQL connectivity and schema visibility |
 | GET | `/api` | Route catalogue |
+| GET | `/docs/API.md` | API reference served by the app |
 | GET | `/api/overview` | Summary metrics and recent transactions |
 | GET | `/api/customers?q=...` | Customer directory and search |
 | GET | `/api/accounts?q=...` | Account directory and search |
@@ -145,6 +146,8 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for Render configuration and [docs/API.md](do
 | GET | `/api/disputes` | Dispute records |
 | GET | `/api/fraud-events` | Recorded investigation events |
 | POST | `/api/transfers` | Demo-only account transfer |
+
+The customer, account, and transaction list endpoints accept bounded `limit` and `offset` parameters and return pagination metadata, including `hasMore` and `nextOffset`. Transaction status filters reject unsupported values instead of silently returning an unfiltered list. See [docs/API.md](docs/API.md) for the page-size caps and response contract.
 
 The transfer request body is JSON:
 
