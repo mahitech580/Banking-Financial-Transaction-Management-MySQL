@@ -9,6 +9,14 @@ Use this checklist before demonstrating the portfolio project or changing its da
 - [ ] Run `npm test` to execute the no-database smoke tests.
 - [ ] Confirm the latest commit is on `main` and the deployment uses that branch.
 
+## 1.1 HTTP input regression checks
+
+- [ ] Send malformed JSON to a JSON API route and confirm HTTP 400 with a stable client-facing error.
+- [ ] Send a JSON body larger than 20 KB and confirm HTTP 413.
+- [ ] Confirm both parser-error responses include `Cache-Control: no-store`.
+- [ ] Confirm parser errors do not include submitted body contents, credentials, SQL, or stack traces.
+- [ ] Re-run `npm run check` and `npm test` after changing middleware order or error handling.
+
 ## 2. Service health
 
 - [ ] `GET /healthz` returns HTTP 200 when the app process is running.
