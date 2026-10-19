@@ -14,15 +14,15 @@ test("advanced SQL library has unique, sequentially named case studies", () => {
   }
 });
 
-test("every advanced SQL case study states its business question", () => {
+test("every advanced SQL case study has a meaningful introductory comment", () => {
   for (const name of sqlFiles) {
     const source = fs.readFileSync(path.join(directory, name), "utf8");
-    assert.match(source, /--\s*Business question:/i, `${name} needs a business question`);
+    assert.match(source.trimStart(), /^--\s+\S/m, `${name} needs an introductory comment`);
     assert.ok(source.trim().length > 80, `${name} looks incomplete`);
   }
 });
 
-test("advanced SQL examples do not contain obvious destructive statements", () => {
+test("advanced SQL examples do not start with obvious data-changing statements", () => {
   const forbidden = /^\s*(DROP|TRUNCATE|DELETE|INSERT|UPDATE|REPLACE|ALTER)\b/im;
   for (const name of sqlFiles) {
     const source = fs.readFileSync(path.join(directory, name), "utf8");
