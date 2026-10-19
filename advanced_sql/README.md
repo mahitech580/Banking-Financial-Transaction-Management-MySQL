@@ -1,6 +1,6 @@
 # Advanced SQL Case-Study Library
 
-This directory contains **296 sequentially numbered analytical case studies** (`001`–`296`) plus **24 supplemental queries** prefixed with `supplemental_`. Supplemental files preserve added analytics that previously collided with the numbered sequence.
+This directory contains **316 sequentially numbered analytical case studies** (`001`–`316` plus **24 supplemental queries** prefixed with `supplemental_`. Supplemental files preserve added analytics that previously collided with the numbered sequence.
 
 ## Requirements and setup
 
@@ -37,6 +37,8 @@ All repository seed rows are synthetic. Do not run setup or write-operation scri
 | 267–276 | Merchant/card activity and review signals by merchant traits, card type, channel, risk and period |
 | 277–286 | Loan collection efficiency by loan type/status, branch, customer risk, due month, tenure, payment status, rate, principal and overdue band |
 | 287–296 | Customer total exposure by risk, branch, city, cohort, age, account/loan portfolio size and active-account relationship |
+| 297–306 | Customer quarterly net flow, product breadth/exposure, account channel preference, loan payment timeliness, settlement latency, card purchase repeats, long activity gaps, ledger-flow diagnostics, branch failure trends and fraud-detection latency |
+| 307–316 | Card merchant breadth, multi-branch footprints, dispute exposure, age-band success rates, overdue repayments, account-type flows, statistical outliers, cumulative branch flows, settlement amount variance and risk-band deciles |
 
 ## Supplemental reconciliation and data-quality checks
 
