@@ -7,7 +7,7 @@ Use this checklist before demonstrating the portfolio project or changing its da
 - [ ] Install dependencies with `npm install`.
 - [ ] Run `npm run check` to parse the server and browser JavaScript.
 - [ ] Run `npm test` to execute the no-database smoke tests and SQL-library static checks.
-- [ ] Confirm the numbered advanced SQL library is sequential through `120` and all examples are read-only reports.
+- [ ] Confirm numbered advanced SQL filenames form a gap-free sequence, supplemental examples use the `supplemental_` prefix, and all reports are read-only.
 - [ ] Confirm the latest commit is on `main` and the deployment uses that branch.
 
 ## 1.1 HTTP input regression checks
@@ -37,11 +37,14 @@ Use this checklist before demonstrating the portfolio project or changing its da
 
 - [ ] Overview metrics match direct SQL counts and sums.
 - [ ] Customer and account search returns matching rows.
+- [ ] List APIs return bounded `limit`/`offset` metadata; `hasMore` and `nextOffset` point to the next page.
+- [ ] Invalid list limits, offsets, and transaction status filters return HTTP 400 when the database is configured.
 - [ ] Transaction search and each status filter operate as expected.
 - [ ] Analytics show sensible values or a clear empty state.
 - [ ] Cards, branches, loans, repayments, settlements, disputes and fraud screens handle empty datasets.
 - [ ] CSV exports contain the visible rows and correctly quote commas and double quotes.
 - [ ] Desktop and mobile navigation can reach every page.
+- [ ] Mobile navigation's `aria-expanded` state stays in sync with its open/closed state, and the active page is announced in the main navigation.
 
 ## 5. Demo transfer tests — isolated synthetic data only
 
