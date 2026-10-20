@@ -2,7 +2,7 @@
 
 A portfolio project that combines **MySQL 8.0+, advanced SQL, an Express REST API, and the Ledgerly browser dashboard** to explore synthetic banking transactions and related financial operations.
 
-The repository includes a relational schema, seeded demonstration records, 28 numbered SQL exercises/modules, an optional idempotent operations-data script, reusable database objects, and a small full-stack interface.
+The repository includes a relational schema, seeded demonstration records, 28 core SQL scripts/modules, an optional idempotent operations-data script, reusable database objects, and a small full-stack interface.
 
 > **Portfolio demo only:** this is not a production banking application. Use only synthetic data and a private development database. Transfers are disabled by default and must never be enabled against a real financial database.
 
@@ -48,7 +48,7 @@ The SQL exercises illustrate relational querying and business analysis; rule-bas
 
 ### Advanced SQL case-study library
 
-The `advanced_sql/` directory contains **342 numbered read-only analytical examples** (`001`–`342`) plus **24 supplemental reports** prefixed `supplemental_`. The numbered library covers customer/account footprint, transaction volume and reliability, ticket-size distributions, merchant/card performance, transfers, lending and repayments, fraud review, disputes, settlements, audit activity, branch operations, customer cohorts, and combined customer exposure. Supplemental files add reconciliation and cross-table data-quality checks without colliding with the numbered sequence. All reports use synthetic demo data; review signals are not proof of fraud or automated financial decisions.
+The `advanced_sql/` directory contains **372 numbered read-only analytical examples** (`001`–`372`) plus **24 supplemental reports** prefixed `supplemental_`. The numbered library covers customer/account footprint, transaction volume and reliability, ticket-size distributions, merchant/card performance, transfers, lending and repayments, fraud review, disputes, settlements, audit activity, branch operations, customer cohorts, and combined customer exposure. Supplemental files add reconciliation and cross-table data-quality checks without colliding with the numbered sequence. All reports use synthetic demo data; review signals are not proof of fraud or automated financial decisions.
 
 Run these scripts only after the required base tables exist. Load `29_demo_operations_data.sql` before card, loan, fraud, dispute, and settlement reports when those optional tables would otherwise be empty. Each file starts with its business question; run examples individually in MySQL Workbench or the MySQL CLI and review the result before adapting it to another dataset.
 
