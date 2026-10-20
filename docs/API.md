@@ -26,7 +26,7 @@ Returns the API route catalogue (overview, customers, accounts, transactions, an
 | GET | `/api/transactions?q=term&status=SUCCESS` | Ledger search; supported statuses are PENDING, SUCCESS, FAILED and REVERSED |
 | GET | `/api/analytics` | Daily activity, channels, transaction types and top customers |
 | GET | `/api/branches` | Branch totals and aggregated balances |
-| GET | `/api/cards` | Card registry; card numbers are masked in the UI |
+| GET | `/api/cards` | Card registry; API responses mask card numbers and expose only the final four digits |
 | GET | `/api/loans` | Loan totals and linked repayment summaries |
 | GET | `/api/repayments` | Individual scheduled and recorded payments |
 | GET | `/api/settlements` | Settlement records and transaction references |
