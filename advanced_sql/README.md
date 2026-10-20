@@ -1,6 +1,6 @@
 # Advanced SQL Case-Study Library
 
-This directory contains **372 sequentially numbered analytical case studies** (`001`–`372`) plus **24 supplemental queries** prefixed with `supplemental_`. Supplemental files preserve added analytics that previously collided with the numbered sequence.
+This directory contains **400 sequentially numbered analytical case studies** (`001`–`400`) plus **24 supplemental queries** prefixed with `supplemental_`. Supplemental files preserve added analytics that previously collided with the numbered sequence.
 
 ## Requirements and setup
 
@@ -44,6 +44,8 @@ All repository seed rows are synthetic. Do not run setup or write-operation scri
 | 337–342 | Card issue cohorts, timestamp-based settlement speed, customer attempt-volume outliers, monthly account coverage and net flow, loan schedule/principal ratios and audit event gaps |
 | 343–357 | Account outcome mix, hourly and weekend channel quality, combined review signals, dormant accounts, cross-source matching, settlement duplicates, loan collection, dispute frequency, concentration, ranked daily transactions and latency gaps |
 | 358–372 | Customer retention cohorts, transfer consistency/routes, card spend-to-limit proxies, account activation, missing repayment schedules, repayment aging, dispute/fraud outcomes, merchant/source comparisons, channel shifts and rolling branch/customer concentration metrics |
+| 373–386 | Annual customer value ranks, balance deciles, fraud-event gaps, weekly branch outcomes, settlement coverage/matching, dispute exposure, transfer profiles, repeated-card candidates, daily failure spikes, active-card usage and overdue lending exposure |
+| 387–400 | Repayment/settlement field consistency, reversed-transaction disputes, branch alignment, product breadth, transfer linkage/status, near-duplicate transfer candidates, merchant-reference coverage and card/account lifecycle reviews |
 
 ## Supplemental reconciliation and data-quality checks
 
