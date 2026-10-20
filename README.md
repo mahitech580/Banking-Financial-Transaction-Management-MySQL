@@ -138,7 +138,7 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for Render configuration and [docs/API.md](do
 | GET | `/api/transactions?q=...&status=SUCCESS` | Filtered ledger entries |
 | GET | `/api/analytics` | Daily activity, channels, types and top customers |
 | GET | `/api/branches` | Branch summaries |
-| GET | `/api/cards` | Card registry (masked in UI) |
+| GET | `/api/cards` | Card registry (API response exposes only the final four card-number digits) |
 | GET | `/api/loans` | Loan portfolio and repayments summary |
 | GET | `/api/repayments` | Repayment schedule and status |
 | GET | `/api/settlements` | Settlement queue and records |
