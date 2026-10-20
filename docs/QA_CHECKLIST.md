@@ -7,7 +7,7 @@ Use this checklist before demonstrating the portfolio project or changing its da
 - [ ] Install dependencies with `npm install`.
 - [ ] Run `npm run check` to parse the server and browser JavaScript.
 - [ ] Run `npm test` to execute the no-database smoke tests and SQL-library static checks.
-- [ ] Confirm numbered advanced SQL filenames form a gap-free sequence through `400`, supplemental files use the `supplemental_` prefix, and all reports are read-only.
+- [ ] Confirm numbered advanced SQL filenames form a gap-free sequence through `520`, supplemental files use the `supplemental_` prefix, and all reports are read-only.
 - [ ] Confirm the latest commit is on `main` and the deployment uses that branch.
 
 ## 1.1 HTTP input regression checks
