@@ -7,6 +7,7 @@ Use this checklist before demonstrating the portfolio project or changing its da
 - [ ] Install dependencies with `npm install`.
 - [ ] Run `npm run check` to parse the server and browser JavaScript.
 - [ ] Run `npm test` to execute the no-database smoke tests and SQL-library static checks.
+- [ ] Confirm `tests/seed-consistency.test.js` reconciles each synthetic account balance to successful ledger activity and verifies the seeded transfer's debit/credit pair.
 - [ ] Confirm numbered advanced SQL filenames form a gap-free sequence through `400`, supplemental files use the `supplemental_` prefix, and all reports are read-only.
 - [ ] Confirm the latest commit is on `main` and the deployment uses that branch.
 
