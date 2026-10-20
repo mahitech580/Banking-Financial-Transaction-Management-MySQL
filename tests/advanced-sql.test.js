@@ -9,7 +9,7 @@ const numberedFiles = sqlFiles.filter((name) => /^\d{3}_.+\.sql$/.test(name));
 const supplementalFiles = sqlFiles.filter((name) => name.startsWith("supplemental_"));
 
 test("numbered advanced SQL case studies have a unique, gap-free sequence", () => {
-  assert.ok(numberedFiles.length >= 372, "expected the numbered case-study library through report 372");
+  assert.ok(numberedFiles.length >= 400, "expected the numbered case-study library through report 400");
   assert.equal(new Set(numberedFiles).size, numberedFiles.length, "numbered filenames must be unique");
   for (const [index, name] of numberedFiles.entries()) {
     assert.equal(Number(name.slice(0, 3)), index + 1, `unexpected sequence at ${name}`);
@@ -61,6 +61,19 @@ test("credit-card spend-to-limit report labels its ratio as a proxy", () => {
 test("negative-balance activity review filters to successful transactions", () => {
   const source = fs.readFileSync(path.join(directory, "357_negative_balance_and_last_activity_review.sql"), "utf8");
   assert.match(source, /WITH last_success AS \([\s\S]*?WHERE status = 'SUCCESS'[\s\S]*?GROUP BY account_id/i);
+});
+
+test("settlement state conflict query remains review-only and counts linked lifecycle states", () => {
+  const source = fs.readFileSync(path.join(directory, "398_transaction_settlement_state_conflicts.sql"), "utf8");
+  assert.ok(source.includes("SUCCESS_WITHOUT_SETTLED_ROW"));
+  assert.ok(source.includes("NON_SUCCESS_WITH_SETTLED_ROW"));
+  assert.match(source, /Not every transaction type requires settlement/i);
+});
+
+test("active-card lifecycle check preserves current-state caveat", () => {
+  const source = fs.readFileSync(path.join(directory, "399_active_cards_linked_to_inactive_accounts.sql"), "utf8");
+  assert.match(source, /current-state relationship check/i);
+  assert.ok(source.includes("c.status = 'ACTIVE' AND a.status IN ('FROZEN', 'CLOSED')"));
 });
 
 test("supplemental reports are explicitly prefixed and do not occupy numbered slots", () => {
