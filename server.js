@@ -8,10 +8,11 @@ const path = require("node:path");
 const { normalizeSearchTerm, parsePagination, parseTransactionStatus, validateTransferPayload } = require("./lib/validation");
 const { maskCardNumber } = require("./lib/card-data");
 const { hasSufficientFunds } = require("./lib/money");
+const { resolveDatabaseName } = require("./lib/database-config");
 
 const app = express();
 const PORT = Number(process.env.PORT || 10000);
-const DATABASE_NAME = process.env.MYSQL_DATABASE || (process.env.MYSQL_URL ? decodeURIComponent(new URL(process.env.MYSQL_URL).pathname.replace(/^\//, "")) : "") || "banking_financial_management";
+const DATABASE_NAME = resolveDatabaseName(process.env.MYSQL_URL, process.env.MYSQL_DATABASE);
 const transfersEnabled = String(process.env.ENABLE_DEMO_TRANSFERS).toLowerCase() === "true";
 
 app.disable("x-powered-by");
