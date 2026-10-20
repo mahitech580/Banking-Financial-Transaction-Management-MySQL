@@ -49,6 +49,15 @@ test("pagination rejects fractional, non-finite and out-of-range values", () => 
   }
 });
 
+test("pagination rejects hexadecimal, exponent and array coercion", () => {
+  for (const limit of ["0x10", "1e2", "+10", "1.0", ["10"], { value: "10" }]) {
+    assert.equal(parsePagination({ limit }).ok, false, "limit=" + String(limit));
+  }
+  for (const offset of ["0x10", "1e2", "+10", ["10"]]) {
+    assert.equal(parsePagination({ offset }).ok, false, "offset=" + String(offset));
+  }
+});
+
 test("transfer validation returns normalized identifiers and fixed-precision amounts", () => {
   const result = validateTransferPayload({ fromAccountId: "3", toAccountId: 4, amount: "125.50" });
   assert.equal(result.ok, true);
