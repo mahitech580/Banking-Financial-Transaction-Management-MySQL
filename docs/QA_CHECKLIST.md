@@ -21,7 +21,7 @@ Use this checklist before demonstrating the portfolio project or changing its da
 ## 2. Service health
 
 - [ ] `GET /healthz` returns HTTP 200 when the app process is running.
-- [ ] `GET /api/health` returns `database: connected` only after MySQL is configured and reachable.
+- [ ] `GET /api/health` returns HTTP 200 only when MySQL is reachable and every required API table exists; a partial schema returns HTTP 503 with `schema: incomplete` and `missingTables`.
 - [ ] A missing or unreachable database results in clear HTTP 503 responses from data endpoints, not fabricated dashboard metrics.
 - [ ] Review service logs for startup errors without exposing credentials.
 
