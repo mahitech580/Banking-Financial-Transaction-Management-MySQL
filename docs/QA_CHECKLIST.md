@@ -7,8 +7,10 @@ Use this checklist before demonstrating the portfolio project or changing its da
 - [ ] Install dependencies with `npm install`.
 - [ ] Run `npm run check` to parse the server and browser JavaScript.
 - [ ] Run `npm test` to execute the no-database smoke tests and SQL-library static checks.
+- [ ] Confirm `tests/seed-consistency.test.js` reconciles each synthetic account balance to successful ledger activity and verifies the seeded transfer's debit/credit pair.
 - [ ] Confirm numbered advanced SQL filenames form a gap-free sequence through `342`, supplemental files use the `supplemental_` prefix, and all reports are read-only.
 - [ ] Confirm the latest commit is on `main` and the deployment uses that branch.
+- [ ] Run `tests/deployment-config.test.js` to verify Render deploys from `main`, uses `/healthz`, keeps demo transfers disabled, and leaves `MYSQL_URL` secret-managed.
 
 ## 1.1 HTTP input regression checks
 
@@ -21,7 +23,7 @@ Use this checklist before demonstrating the portfolio project or changing its da
 ## 2. Service health
 
 - [ ] `GET /healthz` returns HTTP 200 when the app process is running.
-- [ ] `GET /api/health` returns `database: connected` only after MySQL is configured and reachable.
+- [ ] `GET /api/health` returns HTTP 200 only when MySQL is reachable and every required API table exists; a partial schema returns HTTP 503 with `schema: incomplete` and `missingTables`.
 - [ ] A missing or unreachable database results in clear HTTP 503 responses from data endpoints, not fabricated dashboard metrics.
 - [ ] Review service logs for startup errors without exposing credentials.
 

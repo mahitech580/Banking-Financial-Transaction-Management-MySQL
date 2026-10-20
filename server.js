@@ -8,10 +8,12 @@ const path = require("node:path");
 const { normalizeSearchTerm, parsePagination, parseTransactionStatus, validateTransferPayload } = require("./lib/validation");
 const { maskCardNumber } = require("./lib/card-data");
 const { hasSufficientFunds } = require("./lib/money");
+const { resolveDatabaseName } = require("./lib/database-config");
+const { findMissingApiTables } = require("./lib/schema-readiness");
 
 const app = express();
 const PORT = Number(process.env.PORT || 10000);
-const DATABASE_NAME = process.env.MYSQL_DATABASE || (process.env.MYSQL_URL ? decodeURIComponent(new URL(process.env.MYSQL_URL).pathname.replace(/^\//, "")) : "") || "banking_financial_management";
+const DATABASE_NAME = resolveDatabaseName(process.env.MYSQL_URL, process.env.MYSQL_DATABASE);
 const transfersEnabled = String(process.env.ENABLE_DEMO_TRANSFERS).toLowerCase() === "true";
 
 app.disable("x-powered-by");
@@ -99,10 +101,31 @@ app.get("/api/health", asyncRoute(async (_req, res) => {
   try {
     await pool.query("SELECT 1");
     const [tables] = await pool.query(
-      "SELECT COUNT(*) AS table_count FROM information_schema.tables WHERE table_schema = ?",
+      "SELECT table_name FROM information_schema.tables WHERE table_schema = ? AND table_type = 'BASE TABLE'",
       [DATABASE_NAME]
     );
-    res.json({ ok: true, database: "connected", databaseName: DATABASE_NAME, tableCount: Number(tables[0].table_count), transfersEnabled });
+    const tableNames = tables.map((table) => table.table_name);
+    const missingTables = findMissingApiTables(tableNames);
+    if (missingTables.length > 0) {
+      return res.status(503).json({
+        ok: false,
+        database: "connected",
+        schema: "incomplete",
+        databaseName: DATABASE_NAME,
+        tableCount: tableNames.length,
+        missingTables,
+        transfersEnabled,
+        message: "MySQL is reachable, but required banking tables are missing. Run 01_database_schema.sql and 02_tables.sql against the configured database."
+      });
+    }
+    res.json({
+      ok: true,
+      database: "connected",
+      schema: "ready",
+      databaseName: DATABASE_NAME,
+      tableCount: tableNames.length,
+      transfersEnabled
+    });
   } catch (error) {
     console.error("[database-health]", error.code || error.name || "Error");
     res.status(503).json({ ok: false, database: "unreachable", transfersEnabled, message: "MySQL connection failed. Check the database host, credentials, TLS settings and schema." });
