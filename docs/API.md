@@ -45,7 +45,7 @@ The customer, account, and transaction list endpoints accept `limit` and `offset
 | `GET /api/accounts` | 250 | 250 |
 | `GET /api/transactions` | 300 | 300 |
 
-`offset` defaults to 0 and is capped at 100,000. Invalid limits, negative offsets, and offsets above the cap return HTTP `400`. When `hasMore` is true, send `nextOffset` as the next request's `offset`. Pagination values are bound as SQL parameters.
+`offset` defaults to 0 and is capped at 100,000. Limits and offsets must be decimal integer strings; hexadecimal, exponent notation, fractions, arrays, negative offsets, and offsets above the cap return HTTP `400`. When `hasMore` is true, send `nextOffset` as the next request's `offset`. Pagination values are bound as SQL parameters.
 
 Transaction status filters are case-insensitive. Supported values are `PENDING`, `SUCCESS`, `FAILED`, and `REVERSED`; unsupported values return HTTP `400` instead of silently falling back to an unfiltered result.
 
@@ -65,7 +65,7 @@ Request:
 }
 ```
 
-When enabled, the endpoint validates positive integer account IDs, rejects identical accounts, requires a positive amount with no more than two decimal places, locks both account rows, verifies active status and available funds, inserts debit and credit ledger records, updates both balances, creates a transfer record and commits once. Errors roll back the operation.
+When enabled, the endpoint validates positive integer account IDs, rejects identical accounts, and accepts only a positive decimal amount with at most two fractional digits. It locks both account rows and compares balance and requested amount as integer minor units, avoiding JavaScript floating-point rounding for large balances. The route then verifies active status and available funds, inserts debit and credit ledger records, updates both balances, creates a transfer record and commits once. Errors roll back the operation.
 
 Typical errors:
 - `400`: invalid input
