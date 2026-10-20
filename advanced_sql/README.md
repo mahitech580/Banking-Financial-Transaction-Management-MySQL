@@ -1,6 +1,6 @@
 # Advanced SQL Case-Study Library
 
-This directory contains **400 sequentially numbered analytical case studies** (`001`–`400`) plus **24 supplemental queries** prefixed with `supplemental_`. Supplemental files preserve added analytics that previously collided with the numbered sequence.
+This directory contains **520 sequentially numbered analytical case studies** (`001`–`520`) plus **24 supplemental queries** prefixed with `supplemental_`. Supplemental files preserve added analytics that previously collided with the numbered sequence.
 
 ## Requirements and setup
 
@@ -46,6 +46,12 @@ All repository seed rows are synthetic. Do not run setup or write-operation scri
 | 358–372 | Customer retention cohorts, transfer consistency/routes, card spend-to-limit proxies, account activation, missing repayment schedules, repayment aging, dispute/fraud outcomes, merchant/source comparisons, channel shifts and rolling branch/customer concentration metrics |
 | 373–386 | Annual customer value ranks, balance deciles, fraud-event gaps, weekly branch outcomes, settlement coverage/matching, dispute exposure, transfer profiles, repeated-card candidates, daily failure spikes, active-card usage and overdue lending exposure |
 | 387–400 | Repayment/settlement field consistency, reversed-transaction disputes, branch alignment, product breadth, transfer linkage/status, near-duplicate transfer candidates, merchant-reference coverage and card/account lifecycle reviews |
+| 401–420 | Branch outcome trends, account activation/dormancy, customer-channel mix, transfer relationships and settlement aging |
+| 421–440 | Repayment collection, merchant settlement coverage, transfer flows, fraud latency, customer activity spacing and audit coverage |
+| 441–460 | Account opening cohorts, fraud action review, dispute resolution, merchant dispersion, loan schedule exposure and channel outcomes |
+| 461–480 | Channel mix, customer adoption, card-spend proxies, audit distribution, branch/dispute exposure and loan repayment integrity |
+| 481–500 | Ownership and chronology checks, settlement reconciliation, fraud patterns, repayment aging, balance quartiles and daily running totals |
+| 501–520 | Transfer reconciliation candidates, branch balance quartiles, transaction timing, card activity, digital adoption and merchant recency |
 
 ## Supplemental reconciliation and data-quality checks
 
