@@ -4,6 +4,7 @@ WITH last_success AS (
   SELECT account_id, MAX(transaction_time) AS last_success_at,
     SUM(status = 'SUCCESS') AS successful_count
   FROM transactions
+  WHERE status = 'SUCCESS'
   GROUP BY account_id
 )
 SELECT a.account_id, a.account_number, a.account_type, a.status AS account_status,
