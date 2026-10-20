@@ -19,7 +19,7 @@
 
 ## Library organization
 
-- Files named `001_*.sql` through `342_*.sql` form the unique numbered learning path.
+- Files named `001_*.sql` through `372_*.sql` form the unique numbered learning path.
 - Additional reports use the `supplemental_*.sql` prefix so they never collide with the numbered sequence.
 - Each report is a read-only `SELECT` or CTE query. A few use MySQL 8 window functions, `JSON_TYPE`, `GROUP_CONCAT`, or date functions; verify compatibility with the schema and SQL mode in your environment.
 
