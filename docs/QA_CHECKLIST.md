@@ -38,7 +38,8 @@ Use this checklist before demonstrating the portfolio project or changing its da
 - [ ] Overview metrics match direct SQL counts and sums.
 - [ ] Customer and account search returns matching rows.
 - [ ] Customer, account and transaction list APIs return bounded pagination metadata; `hasMore` and `nextOffset` select the next page.
-- [ ] Invalid limits, offsets and transaction status filters return HTTP 400 when MySQL is configured.
+- [ ] Invalid limits, offsets, hexadecimal/exponent pagination values, and transaction status filters return HTTP 400 when MySQL is configured.
+- [ ] `GET /api/cards` never returns complete card numbers; only the final four digits are exposed.
 - [ ] Transaction search and each status filter operate as expected.
 - [ ] Analytics show sensible values or a clear empty state.
 - [ ] Cards, branches, loans, repayments, settlements, disputes and fraud screens handle empty datasets.
@@ -53,7 +54,8 @@ Use this checklist before demonstrating the portfolio project or changing its da
 - [ ] Confirm a valid transfer creates outgoing and incoming transaction entries and changes both account balances by equal amounts.
 - [ ] Confirm insufficient balance is rejected with no balance or ledger change.
 - [ ] Confirm a closed/frozen account and same-account transfer are rejected.
-- [ ] Confirm invalid amounts and unknown account IDs are rejected.
+- [ ] Confirm invalid amounts, non-decimal coercions and unknown account IDs are rejected.
+- [ ] Confirm available-funds comparisons preserve cents for very large DECIMAL balances.
 - [ ] Confirm failures roll back all related writes.
 - [ ] Turn the flag off after the demo.
 
