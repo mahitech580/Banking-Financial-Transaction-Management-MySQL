@@ -63,6 +63,13 @@ test("negative-balance activity review filters to successful transactions", () =
   assert.match(source, /WITH last_success AS \([\s\S]*?WHERE status = 'SUCCESS'[\s\S]*?GROUP BY account_id/i);
 });
 
+test("daily failure-spike baseline excludes the candidate day", () => {
+  const source = fs.readFileSync(path.join(directory, "383_account_daily_failure_spike_candidates.sql"), "utf8");
+  assert.match(source, /ROWS BETWEEN 30 PRECEDING AND 1 PRECEDING/i);
+  assert.ok(source.includes("prior_observed_days >= 3"));
+  assert.match(source, /candidate day itself/i);
+});
+
 test("transfer linkage check accepts the project's originating debit convention", () => {
   const source = fs.readFileSync(path.join(directory, "394_transfer_transaction_type_linkage_exceptions.sql"), "utf8");
   assert.match(source, /originating DEBIT transaction/i);
