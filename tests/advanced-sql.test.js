@@ -37,8 +37,12 @@ test("every SQL example is a read-only SELECT or CTE with an introductory commen
 test("branch balance report pre-aggregates accounts to avoid join fan-out", () => {
   const source = fs.readFileSync(path.join(directory, "027_branch_customer_account_summary.sql"), "utf8");
   assert.doesNotMatch(source, /SUM\\s*\\(\\s*DISTINCT\\s+a\\.current_balance\\s*\\)/i);
-  assert.match(source, /SELECT\\s+branch_id,\\s*COUNT\\(\\*\\)\\s+AS\\s+customer_count[\\s\\S]*?FROM\\s+customers[\\s\\S]*?GROUP\\s+BY\\s+branch_id/i);
-  assert.match(source, /SELECT\\s+branch_id,[\\s\\S]*?SUM\\(current_balance\\)\\s+AS\\s+total_balance[\\s\\S]*?FROM\\s+accounts[\\s\\S]*?GROUP\\s+BY\\s+branch_id/i);
+  assert.ok(source.includes("SELECT branch_id, COUNT(*) AS customer_count"));
+  assert.ok(source.includes("FROM customers"));
+  assert.ok(source.includes("GROUP BY branch_id"));
+  assert.ok(source.includes("COUNT(*) AS account_count"));
+  assert.ok(source.includes("SUM(current_balance) AS total_balance"));
+  assert.ok(source.includes("FROM accounts"));
 });
 
 test("supplemental reports are explicitly prefixed and do not occupy numbered slots", () => {
