@@ -9,7 +9,7 @@ const numberedFiles = sqlFiles.filter((name) => /^\d{3}_.+\.sql$/.test(name));
 const supplementalFiles = sqlFiles.filter((name) => name.startsWith("supplemental_"));
 
 test("numbered advanced SQL case studies have a unique, gap-free sequence", () => {
-  assert.ok(numberedFiles.length >= 342, "expected the numbered case-study library");
+  assert.ok(numberedFiles.length >= 372, "expected the numbered case-study library through report 372");
   assert.equal(new Set(numberedFiles).size, numberedFiles.length, "numbered filenames must be unique");
   for (const [index, name] of numberedFiles.entries()) {
     assert.equal(Number(name.slice(0, 3)), index + 1, `unexpected sequence at ${name}`);
@@ -43,6 +43,24 @@ test("branch balance report pre-aggregates accounts to avoid join fan-out", () =
   assert.ok(source.includes("COUNT(*) AS account_count"));
   assert.ok(source.includes("SUM(current_balance) AS total_balance"));
   assert.ok(source.includes("FROM accounts"));
+});
+
+test("cross-source merchant report keeps data sources separate", () => {
+  const source = fs.readFileSync(path.join(directory, "368_merchant_activity_across_ledger_and_card_sources.sql"), "utf8");
+  assert.ok(source.includes("'ACCOUNT_LEDGER' AS event_source"));
+  assert.ok(source.includes("'CARD_ACTIVITY' AS event_source"));
+  assert.match(source, /Do not add the two source totals without a documented deduplication model/i);
+});
+
+test("credit-card spend-to-limit report labels its ratio as a proxy", () => {
+  const source = fs.readFileSync(path.join(directory, "361_credit_card_recent_spend_to_limit_bands.sql"), "utf8");
+  assert.match(source, /spend-to-limit proxy, not revolving-balance utilization/i);
+  assert.ok(source.includes("spend_to_limit_proxy_pct"));
+});
+
+test("negative-balance activity review filters to successful transactions", () => {
+  const source = fs.readFileSync(path.join(directory, "357_negative_balance_and_last_activity_review.sql"), "utf8");
+  assert.match(source, /WITH last_success AS \([\s\S]*?WHERE status = 'SUCCESS'[\s\S]*?GROUP BY account_id/i);
 });
 
 test("supplemental reports are explicitly prefixed and do not occupy numbered slots", () => {
