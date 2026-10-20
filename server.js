@@ -7,6 +7,7 @@ const mysql = require("mysql2/promise");
 const path = require("node:path");
 const { normalizeSearchTerm, parsePagination, parseTransactionStatus, validateTransferPayload } = require("./lib/validation");
 const { maskCardNumber } = require("./lib/card-data");
+const { hasSufficientFunds } = require("./lib/money");
 
 const app = express();
 const PORT = Number(process.env.PORT || 10000);
@@ -340,7 +341,7 @@ app.post("/api/transfers", requireDatabase, asyncRoute(async (req, res) => {
       await connection.rollback();
       return res.status(409).json({ error: "Transfers require both accounts to be ACTIVE." });
     }
-    if (Number(from.current_balance) < amount) {
+    if (!hasSufficientFunds(from.current_balance, amountSql)) {
       await connection.rollback();
       return res.status(409).json({ error: "Insufficient available balance." });
     }
