@@ -63,6 +63,23 @@ test("negative-balance activity review filters to successful transactions", () =
   assert.match(source, /WITH last_success AS \([\s\S]*?WHERE status = 'SUCCESS'[\s\S]*?GROUP BY account_id/i);
 });
 
+test("transfer linkage check accepts the project's originating debit convention", () => {
+  const source = fs.readFileSync(path.join(directory, "394_transfer_transaction_type_linkage_exceptions.sql"), "utf8");
+  assert.match(source, /originating DEBIT transaction/i);
+  assert.ok(source.includes("WHERE t.transaction_type NOT IN ('DEBIT', 'TRANSFER')"));
+  assert.ok(source.includes("'TRANSFER_ROW_LINKED_TO_UNEXPECTED_TYPE'"));
+});
+
+test("hourly channel report includes useful amount and sample-coverage metrics", () => {
+  const source = fs.readFileSync(path.join(directory, "344_hourly_channel_success_quality.sql"), "utf8");
+  assert.ok(source.includes("observed_calendar_days"));
+  assert.ok(source.includes("average_attempt_amount"));
+  assert.ok(source.includes("average_successful_amount"));
+  assert.ok(source.includes("successful_gross_value"));
+  assert.ok(source.includes("latest_attempt_at"));
+  assert.ok(!source.includes("average_second_of_day"));
+});
+
 test("settlement state conflict query remains review-only and counts linked lifecycle states", () => {
   const source = fs.readFileSync(path.join(directory, "398_transaction_settlement_state_conflicts.sql"), "utf8");
   assert.ok(source.includes("SUCCESS_WITHOUT_SETTLED_ROW"));
