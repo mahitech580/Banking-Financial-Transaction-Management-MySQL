@@ -11,7 +11,7 @@ Process liveness check. Returns HTTP 200 without needing MySQL:
 ```
 
 ### `GET /api/health`
-Checks MySQL connectivity and reports whether the configured schema is visible. Returns HTTP 503 if MySQL is missing or unreachable.
+Checks MySQL connectivity and schema readiness. Returns HTTP 200 with `database: "connected"` and `schema: "ready"` only when every table required by the API is present. If MySQL is reachable but the schema is partial, it returns HTTP 503 with `database: "connected"`, `schema: "incomplete"`, and a `missingTables` array. Missing configuration or an unreachable database also returns HTTP 503. The Render liveness check remains `/healthz`, so a database outage does not cause the platform to treat a running process as dead.
 
 ### `GET /api`
 Returns the API route catalogue (overview, customers, accounts, transactions, analytics, branches, cards, loans, repayments, settlements, disputes, fraud events, and transfer operation).
