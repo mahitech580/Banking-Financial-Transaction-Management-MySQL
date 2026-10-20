@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const mysql = require("mysql2/promise");
 const path = require("node:path");
 const { normalizeSearchTerm, parsePagination, parseTransactionStatus, validateTransferPayload } = require("./lib/validation");
+const { maskCardNumber } = require("./lib/card-data");
 
 const app = express();
 const PORT = Number(process.env.PORT || 10000);
@@ -277,7 +278,7 @@ app.get("/api/cards", requireDatabase, asyncRoute(async (_req, res) => {
     JOIN accounts a ON a.account_id = cd.account_id
     ORDER BY cd.card_id DESC LIMIT 250
   `);
-  res.json({ data: rows });
+  res.json({ data: rows.map((row) => ({ ...row, card_number: maskCardNumber(row.card_number) })) });
 }));
 
 app.get("/api/repayments", requireDatabase, asyncRoute(async (_req, res) => {
